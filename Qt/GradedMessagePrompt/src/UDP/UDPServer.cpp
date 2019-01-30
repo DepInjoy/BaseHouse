@@ -26,6 +26,7 @@ void UDPServer::run()
 UDPServer::~UDPServer()
 {
     if(_udpsocket){
+        _udpsocket->close();
         _udpsocket->deleteLater();
         _udpsocket = NULL;
     }

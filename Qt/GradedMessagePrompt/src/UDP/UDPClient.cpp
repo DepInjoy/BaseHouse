@@ -13,6 +13,14 @@ UDPClient::UDPClient():
     }
     connect(_udpClient,&QUdpSocket::readyRead,this,&UDPClient::_received);
 }
+UDPClient::~UDPClient()
+{
+    if(_udpClient){
+        _udpClient->close();
+        _udpClient->deleteLater();
+        _udpClient = NULL;
+    }
+}
 
 void UDPClient::writeBytes(QByteArray& bytes,QHostAddress hostAddr,quint16 port)
 {
@@ -44,7 +52,7 @@ void UDPClient::_received()
     while (_udpClient->hasPendingDatagrams()) {
         bytes.resize(_udpClient->pendingDatagramSize());
         _udpClient->readDatagram(bytes.data(),bytes.size(),&chost,&cport);
-#if 1
+#if 0
         qDebug() << "Client size " << bytes.size() << " data " << bytes.data()
                  << " host " << chost << " port " << cport;
 #endif

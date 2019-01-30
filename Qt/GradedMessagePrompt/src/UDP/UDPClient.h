@@ -9,6 +9,7 @@ class UDPClient : public QObject
     Q_OBJECT
 public:
     explicit UDPClient();
+    ~UDPClient();
     void writeBytes(QByteArray& bytes, QHostAddress
             hostAddr = QHostAddress("127.0.0.1"),quint16 port = 6000);
 
