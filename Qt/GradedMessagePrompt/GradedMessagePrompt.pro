@@ -18,17 +18,20 @@ SOURCES += main.cpp\
     src/TCP/TCPLink.cpp \
     src/TCP/TCPServer.cpp \
     src/UDP/UDPClient.cpp \
-    src/UDP/UDPServer.cpp
+    src/UDP/UDPServer.cpp \
+    src/HTTP/HTTPLink.cpp
 
 INCLUDEPATH += src \
         src/TCP \
         src/UDP \
+        src/HTTP \
 
 HEADERS  += mainwindow.h \
     src/Bubble.h \
     src/TCP/TCPLink.h \
     src/TCP/TCPServer.h \
     src/UDP/UDPClient.h \
-    src/UDP/UDPServer.h
+    src/UDP/UDPServer.h \
+    src/HTTP/HTTPLink.h
 
 FORMS   += mainwindow.ui

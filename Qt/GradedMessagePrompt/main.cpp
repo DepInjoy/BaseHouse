@@ -9,6 +9,9 @@
 #include "UDPClient.h"
 #include "UDPServer.h"
 #endif
+#ifdef HTTP_LOOP_TEST
+#include "HTTPLink.h"
+#endif
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -33,6 +36,15 @@ int main(int argc, char *argv[])
     UDPServer* udpServer = new UDPServer();
     UDPClient* udpClient = new UDPClient();
     udpClient->writeBytes(QByteArray("Hello World!"));
+#endif
+#ifdef HTTP_LOOP_TEST
+    //HTTP unit test
+    HTTPLink* httpLink = new HTTPLink();
+    const QUrl& url(QUrl("http://www.baidu.com:80"));
+    httpLink->setUrl(url);
+    QHash<QString, QByteArray> headers;
+    httpLink->setHttpRequest(headers);
+    httpLink->sendMessage(QByteArray("GET /index.html HTTP/1.1"));
 #endif
     int exit = a.exec();
 
