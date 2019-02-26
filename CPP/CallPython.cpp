@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 	}
 
 
-	PyObject* pModule = PyImport_ImportModule("Dict");
+	PyObject* pModule = PyImport_ImportModule("CPPCallPythonAPI");
 	if (!pModule){
 		cout << "Get python module failed !";
 		return -1;
