@@ -14,9 +14,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-    src/Palette.cpp
+    src/Palette.cpp \
+    src/MainApplication.cpp \
+    src/MainQmlSingle.cpp
 
-RESOURCES += qml.qrc
+RESOURCES += qml.qrc \
+    src/QmlControls/customcontrols.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -29,5 +32,13 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+INCLUDEPATH += \
+    src/
+
 HEADERS += \
-    src/Palette.h
+    src/Palette.h \
+    src/MainApplication.h \
+    src/MainQmlSingle.h
+
+DISTFILES += \
+    src/QmlControls/FlatUI.Controls.qmldir

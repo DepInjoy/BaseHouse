@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/qml">
+        <file alias="FlatUI/Controls/qmldir">FlatUI.Controls.qmldir</file>
+        <file alias="FlatUI/Controls/CustomTextField.qml">CustomTextField.qml</file>
+    </qresource>
+    <qresource prefix="/"/>
+</RCC>
