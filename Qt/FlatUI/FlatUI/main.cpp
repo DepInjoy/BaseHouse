@@ -1,5 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <future>
+#include "MainApplication.h"
 
 int main(int argc, char *argv[])
 {
@@ -8,6 +10,9 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
+
+    MainApplication* _mainApp = new MainApplication();
+    std::shared_ptr<MainApplication> mainAppPtr(_mainApp);
 
     QQmlApplicationEngine engine;
     engine.addImportPath("qrc:/qml");
