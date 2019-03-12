@@ -1,3 +1,5 @@
 Module FlatUI.Controls
 
-CustomTextField 1.0 CustomTextField.qml
+singleton ScreenTools       1.0         ScreenTools.qml
+CustomTextField             1.0         CustomTextField.qml
+CustomText                  1.0         CustomText.qml

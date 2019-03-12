@@ -2,6 +2,7 @@
 #include <functional>
 #include "MainApplication.h"
 #include "MainQmlSingle.h"
+#include "Palette.h"
 
 static QObject* MainQmlSingleApplication(QQmlEngine *,QJSEngine *);
 static MainApplication* mainApp()
@@ -28,5 +29,6 @@ MainApplication::~MainApplication()
 
 void MainApplication::_init(void)
 {
-    qmlRegisterSingletonType<MainQmlSingle>("FlatUI", 1, 0, "FlatUI", MainQmlSingleApplication);
+    qmlRegisterSingletonType<MainQmlSingle>("FlatUI",           1,      0,      "FlatUI",   MainQmlSingleApplication);
+    qmlRegisterType<Palette>                ("FlatUI.Palette",  1,      0,      "Palette");
 }

@@ -10,6 +10,18 @@ class MainQmlSingle : public QObject
 public:
     explicit MainQmlSingle(MainApplication* app);
     ~MainQmlSingle();
+
+    enum MsgLevel{
+        MSG_DISABLE_LEVEL,
+        MSG_INFO_LEVEL,
+        MSG_WARNING_LEVEL,
+        MSG_ERROR_LEVEL,
+        MSG_ACCEPTED_LEVEL,
+        MSG_REFUSED_LEVEL,
+        MSG_END_LEVEL,
+    };
+
+    Q_ENUMS(MsgLevel)
 signals:
 
 public slots:

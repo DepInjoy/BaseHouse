@@ -1,5 +1,6 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
+import FlatUI 1.0
 import FlatUI.Controls 1.0
 
 ApplicationWindow {
@@ -8,7 +9,7 @@ ApplicationWindow {
     width: 640
     height: 480
     title: qsTr("Scroll")
-
+    color: ScreenTools.palette.window
     ScrollView {
         anchors.fill: parent
         ListView {
@@ -21,9 +22,13 @@ ApplicationWindow {
         }
     }
 
-    CustomTextField{
+    Row{
         anchors.centerIn:   parent
-        height: 60
-        width: 200
+        spacing:                20
+        CustomTextField{
+        }
+        CustomTextField{
+            onEditingFinished:  hintLevel = FlatUI.MSG_REFUSED_LEVEL
+        }
     }
 }
