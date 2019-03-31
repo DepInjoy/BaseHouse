@@ -1,0 +1,26 @@
+#define SIMPLE_FACTORY
+#include <iostream>
+#ifdef SIMPLE_FACTORY
+#include <SimpleFactoryDemo.h>
+#endif // SIMPLE_FACTORY
+
+int main(int argc, char* argv[])
+{
+#ifdef SIMPLE_FACTORY
+	//SimpleFactoryDemo::simplestCalculator();
+
+
+	float a, b;
+	std::cout << "Please input your first number : " << std::endl;
+	std::cin >> a ;
+	std::cout << "Please input your second number : " << std::endl;
+	std::cin >> b;
+	Operation* opAdd =  SimpleFactoryDemo::createFactory('+');
+	opAdd->setNumA(a);
+	opAdd->setNumB(b);
+	std::cout << opAdd->getResult() << std::endl;
+#endif // SIMPLE_FACTORY
+
+	system("pause");
+	return 0;
+}
