@@ -31,11 +31,12 @@ bool HTTPLink::setUrl(const QUrl &url)
 
 void HTTPLink::setHttpRequest(QHash<QString, QByteArray> headers)
 {
+#if 0
     if(!headers.size())
         return;
-
+#endif
     _networkRequest.setHeader(QNetworkRequest::ContentTypeHeader,
-            QVariant("application/x-www-form-urlencoded"));
+            QVariant("application/json"));
 }
 
 void HTTPLink::sendMessage(QByteArray& content, bool cryDes)
@@ -48,16 +49,24 @@ void HTTPLink::sendMessage(QByteArray& content, bool cryDes)
 */
 void HTTPLink::_handleNetworkReply(QNetworkReply* reply)
 {
-    QByteArray bytes;
+    QByteArray bytes = reply->readAll();
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(bytes);
+    QJsonObject jsonObj = jsonDoc.object();
     switch (reply->error()) {
     // No error was found and handle them
     case QNetworkReply::NoError:
-        bytes = reply->readAll();
-        qDebug() << "Get reply : " << bytes;
+        if(jsonObj.contains("msg")){
+            QString msgStr = jsonObj.value("msg").toString();
+            qDebug() << "reply status message: " << msgStr;
+        }else{
+            qDebug() << "Get reply : " << QString::fromUtf8(bytes);
+        }
         break;
     default:
         // Found HTTP error and show them.
-        qWarning() << "Reply error message: " << reply->errorString();
+        qWarning() << "Reply error message: "
+                   << bytes << QString::fromUtf8(bytes)
+                   << reply->errorString();
         break;
     }
     // It's responsibile to delete the reply object.
