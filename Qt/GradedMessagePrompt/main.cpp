@@ -44,7 +44,14 @@ int main(int argc, char *argv[])
     httpLink->setUrl(url);
     QHash<QString, QByteArray> headers;
     httpLink->setHttpRequest(headers);
-    httpLink->sendMessage(QByteArray("GET /index.html HTTP/1.1"));
+    QJsonObject array{
+        {"userName","admin"},
+        {"password","123456"},
+    };
+    QJsonDocument doc=QJsonDocument(array);
+    QByteArray bytes = doc.toJson();
+    bytes.append("\r\n");
+    httpLink->sendMessage(bytes);
 #endif
     int exit = a.exec();
 
