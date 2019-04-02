@@ -1,15 +1,15 @@
-#define SIMPLE_FACTORY
+#define STRATEGY
 #include <iostream>
 #ifdef SIMPLE_FACTORY
 #include <SimpleFactoryDemo.h>
 #endif // SIMPLE_FACTORY
-
+#ifdef STRATEGY
+#include "StrategyDemo.h"
+#endif
 int main(int argc, char* argv[])
 {
 #ifdef SIMPLE_FACTORY
 	//SimpleFactoryDemo::simplestCalculator();
-
-
 	float a, b;
 	std::cout << "Please input your first number : " << std::endl;
 	std::cin >> a ;
@@ -20,7 +20,9 @@ int main(int argc, char* argv[])
 	opAdd->setNumB(b);
 	std::cout << opAdd->getResult() << std::endl;
 #endif // SIMPLE_FACTORY
-
+#ifdef STRATEGY
+	StrategyDemo::strategyDemoTest();
+#endif
 	system("pause");
 	return 0;
 }
