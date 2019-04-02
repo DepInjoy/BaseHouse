@@ -22,6 +22,7 @@ int main(int argc, char* argv[])
 #endif // SIMPLE_FACTORY
 #ifdef STRATEGY
 	StrategyDemo::strategyDemoTest();
+	StrategyDemo::strategyFactoryDemoTest();
 #endif
 	system("pause");
 	return 0;
