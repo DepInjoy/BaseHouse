@@ -1,5 +1,10 @@
 from flask import Flask
+from flask import request
+from flask import make_response
+from flask import redirect
+from flask import abort
 
+from flask_script import Manager
 '''
 创建程序实例
 Web服务器使用 WSGI协议吧接收的来自客户端的请求都在转交给该对象处理
@@ -30,10 +35,35 @@ def next(info):
 def user(id):
     return '<h1>Input id: %s </h1>' % id
 
+# 引入请求对象处理请求
+@app.route('/user/')
+def getUserAgent():
+    user_agent = request.headers.get("User_Agent")
+    return  '<p>Your Brower is %s </p>' % user_agent
+
+@app.route('/res/')
+def getRespone():
+    respone = make_response('<h1>This Document carries a cookie！</h1>')
+    respone.set_cookie('answer', '42')
+    return respone
+
+@app.route('/res2/')
+def getRespone2():
+    return redirect('https://www.baidu.com/')
+
+@app.route("/error/")
+def getError():
+    abort(200)
+    return 'Error'
 '''
 启动服务器
 确保只有执行该脚本才会启动Web服务器
 如果该脚本由其他脚本引入，则不会出现运行app.run()导致启动服务器
 '''
 if __name__ == '__main__':
-    app.run(debug=True )
+    if 0:
+        # 支持命令行输入参数
+        manager = Manager(app)
+        manager.run()
+    else:
+        app.run()
