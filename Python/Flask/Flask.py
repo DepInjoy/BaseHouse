@@ -3,6 +3,7 @@ from flask import request
 from flask import make_response
 from flask import redirect
 from flask import abort
+from flask import render_template
 
 from flask_script import Manager
 '''
@@ -23,17 +24,35 @@ def index():
     将index()作为程序根地址处理程序，这样通过web浏览器访问时，会自动执行index函数
     该index函数名可以更换为hello或者其他
     '''
-    return '<h1>Hello World</h1>'
+    if 0:
+        return '<h1>Hello World</h1>'
+    else:
+        return render_template('index.html')
 
 #指定动态输入，默认格式为字符串
 @app.route('/next/<info>')
 def next(info):
-    return '<h1>Next Page is opened with %s </h1>' % info
+    if 0:
+        return '<h1>Next Page is opened with %s </h1>' % info
+    else:
+        '''
+        左侧的info表示参数名，即模板中使用的占位符
+        右侧的info表示当前作用域中的变量
+        '''
+        return render_template('info.html', info=info)
 
 # 指定动态输入部分的数据格式
 @app.route('/user/<int:id>')
 def user(id):
-    return '<h1>Input id: %s </h1>' % id
+    if 0:
+        return '<h1>Input id: %s </h1>' % id
+    else:
+        return render_template('user_id.html', id=id)
+
+@app.route('/users/')
+def users():
+    ids = [1, 2, 3, 4, 5, 6, 7, 8]
+    return render_template('users_id.html', ids=ids)
 
 # 引入请求对象处理请求
 @app.route('/user/')
