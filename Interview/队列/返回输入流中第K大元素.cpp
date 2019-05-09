@@ -18,6 +18,11 @@ public:
         if(minHeap.size() < size){
             minHeap.push(val);
         }else{
+			/*	
+				堆维护
+				如果进入的元素比堆顶元素大，则插入
+				否则，不处理
+			*/
             if(minHeap.top() < val){
                 if(!minHeap.empty()) minHeap.pop();
                 minHeap.push(val);
@@ -27,6 +32,7 @@ public:
     }
     
     private:
+		//大顶堆
         priority_queue<int, deque<int>, greater<int>> minHeap;
         int size;
 };
