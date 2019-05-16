@@ -7,14 +7,42 @@ public:
 		_r = 0;
 		std::cout << "Construct Circle without Parameter" << std::endl;
 	}
+
 	Circle(double r){
 		_r = r;
 		std::cout << "Construct Circle with " << r << std::endl;
 	}
+	
+	Circle(double r, int x, int y){
+		std::cout << "Construct Circle with " << r << " ("
+			<< x << "," << y << ")" << std::endl;
+	}
+	
+	Circle(const Circle& c){
+		_r = c._r;
+		std::cout << "Copy Construct " << _r << std::endl;
+	}
+	
+	Circle& operator=(const Circle& c){
+		_r = c._r;
+		std::cout << "copy operator = " << _r << std::endl;
+		return *this;
+	}
+	
+	void copyCircle(const Circle& c){
+		std::cout << "The radius of copied circle " << c._r << std::endl;
+	}
+	
+	Circle& copyCircle2(double r){
+		Circle c(r);
+		return c;
+	}
+	
 	double area(void){
 		std::cout << "Circle's area: " << 3.1415926 * _r * _r << std::endl;
 		return 3.1415926 * _r * _r;
 	}
+	
 	~Circle(){
 		std::cout << "Deconstruct Circle r = " << _r << std::endl;
 	}
