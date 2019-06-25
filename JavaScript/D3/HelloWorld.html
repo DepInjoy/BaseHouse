@@ -1,0 +1,65 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>HelloWorld</title>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+<body>
+    <h1>Head 0</h1>
+    <h1>Head 1</h1>
+    <h1>Head 2</h1>
+    <p id="p0">Hello World 1</p>
+    <p class="myclass">Hello World 2</p>
+    <p class="myclass">Hello World 3</p>
+    <script>
+        //选择集
+        var body = d3.select("body");
+        var p = body.selectAll("p");
+
+        var str = "item";
+
+        p.datum(str);
+        /*
+        * 无名函数，当选择集需要绑定数据时常常这么使用
+        * @param d      代表数据，即与元素绑定的数据
+        * @param i      代表数据索引，从0开始
+        * */
+        p.text(function (d, i ) {
+            return "第 " + i + " 个 " + d;
+        })
+
+        //设置所有的段落字体大小设置为36px
+        p.style("font-size", "36px");
+
+        //选中id为p0的元素，将颜色赋予红色
+        var p2 = body.select("#p0")
+        p2.style("color", "red")
+
+        //将class为myclass的元素的颜色置为绿色
+        var p3 = body.selectAll(".myclass")
+        p3.style("color", "green")
+
+        //插入元素，在body的末尾追加一个p元素
+        body.append("p")
+            .text("Append a p element")
+
+        //在id为p0的元素前面添加一个p元素
+        body.insert("p", "#p0")
+            .text("Insert a p element")
+
+        //删除id为p0的元素
+        body.select("#p0").remove()
+    </script>
+    <script>
+        //将数组的各元素绑定到h1元素上
+        var dataSet = ["Demo1", "Demo2", "Demo3"]
+        var body = d3.select("body")
+        var h1 = body.selectAll("h1")
+        h1.data(dataSet)
+            .text(function (d, i) {
+                return d;
+
+            })
+    </script>
+</body>
+</html>
