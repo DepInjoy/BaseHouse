@@ -6,11 +6,13 @@ D3全称是(Data-Driven Documents),一个JavaScript实现的开源项目，主�
     - DynamicCircle.js
     功能描述：绘制一个圆，添加事件监听器，监听鼠标悬浮、点击、双击和离开，改变圆的颜色和大小。
     
-- HelloWorld.html<br/>
+    - HelloWorld.html<br/>
     功能描述：将所有的段落的字体更改为36px
               展示和元素的选择和数据的绑定
               选择、插入和删除元素相关操作
 
+    - PiePlot.html
+        功能描述：绘制一个饼状图，为不同的饼块添加不同的颜色和对应的数值。
 - CircleAnimation.html
     - 功能描述：实现在1秒内将圆心坐标由100变化到300，半径缩小到25并采用bounce的过渡方式将颜色由绿色变更为红色
     - 重点功能接口：
