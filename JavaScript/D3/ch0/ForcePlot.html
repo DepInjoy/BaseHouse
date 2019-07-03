@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>力导向图</title>
+    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+<body>
+<script>
+    //指定svg的宽度和高度
+    var width = 300, height = 300;
+    /**
+        要处理的数据
+    * */
+    var nodes = [ { name: "桂林" }, { name: "广州" },
+        { name: "厦门" }, { name: "杭州" },
+        { name: "上海" }, { name: "青岛" },
+        { name: "天津" } ];
+
+    var edges = [ { source : 0 , target: 1 } , { source : 0 , target: 2 } ,
+        { source : 0 , target: 3 } , { source : 1 , target: 4 } ,
+        { source : 1 , target: 5 } , { source : 1 , target: 6 } ];
+
+    var svg = d3.select("body")                                 //添加svg
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    /**
+        布局(数据转换)
+    * */
+    var force = d3.layout.force()
+        .nodes(nodes)                                           //指定节点数组
+        .links(edges)                                           //指定连线数组
+        .size([width,height])                                   //指定作用域范围
+        .linkDistance(150)                                      //指定连线长度
+        .charge([-400])                                         //相互之间的作用力
+        .start();                                               //使力学作用生效
+    //console.log(nodes);
+    //console.log(edges);
+    /**
+       开始绘图，绘图包含三个部分：
+       1. line，线段，表示连线。
+       2. circle，圆，表示节点。
+       3. text，文字，描述节点。
+    * */
+    var svg_edges = svg.selectAll("line")                           //添加连线
+        .data(edges)
+        .enter()
+        .append("line")
+        .style("stroke","#ccc")
+        .style("stroke-width",1);
+
+    var color = d3.scale.category20();
+    var svg_nodes = svg.selectAll("circle")                         //添加节点
+        .data(nodes)
+        .enter()
+        .append("circle")
+        .attr("r",20)
+        .style("fill",function(d,i){
+            return color(i);
+        })
+        .call(force.drag);                                          //使节点能够拖动
+
+    var svg_texts = svg.selectAll("text")                           //添加描述节点的文字
+        .data(nodes)
+        .enter()
+        .append("text")
+        .style("fill", "black")
+        .attr("dx", 20)
+        .attr("dy", 8)
+        .text(function(d){
+            return d.name;
+        });
+
+    force.on("tick", function(){                                    //tick,每进行到一定时刻，更新内容
+        svg_edges.attr("x1",function(d){ return d.source.x; })      //更新连线坐标
+            .attr("y1",function(d){ return d.source.y; })
+            .attr("x2",function(d){ return d.target.x; })
+            .attr("y2",function(d){ return d.target.y; });
+
+        svg_nodes.attr("cx",function(d){ return d.x; })             //更新节点坐标
+            .attr("cy",function(d){ return d.y; });
+
+        svg_texts.attr("x", function(d){ return d.x; })             //更新文字坐标
+            .attr("y", function(d){ return d.y; });
+    });
+</script>
+</body>
+</html>

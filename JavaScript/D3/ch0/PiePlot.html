@@ -20,17 +20,17 @@
             .attr("width", width)
             .attr("height", height);
 
-        var outerRadius = 150;  //外半径
-        var innerRadius = 0;    //内半径
+        var outerRadius = 150;                                  //外半径
+        var innerRadius = 0;                                    //内半径
         //弧生成器,生成弧路径
         var arc = d3.svg.arc()
             .innerRadius(innerRadius)
             .outerRadius(outerRadius);
 
         var arcs = svg.selectAll("g")
-            .data(pieData)                  //获得路径值
+            .data(pieData)                                      //获得路径值
             .enter()
-            .append("g")                    //添加足够的分组g
+            .append("g")                                        //添加足够的分组g
             .attr("transform", "translate(" + (width/2) + "," + (width/2) + ")");
 
         //定义十种颜色的颜色比例尺
@@ -41,7 +41,7 @@
                 return color(i);
             })
             .attr("d", function (d, i) {
-                return arc(d);                      //调用弧生成器，得到路径
+                return arc(d);                                  //调用弧生成器，得到路径
             });
 
         //为轴线中心添加文本
@@ -53,10 +53,6 @@
             .text(function (d) {
                 return d.data;
             });
-
-
-
-
     </script>
 </body>
 </html>
