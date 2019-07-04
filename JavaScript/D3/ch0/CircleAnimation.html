@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>绘制一个圆的动画</title>
+    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+<body>
+    <script>
+        //设置画布的大小
+        var width = 300, height = 300;
+
+        //创建画布
+        var svg = d3.select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+        //在(100, 100)处绘制半径为45的绿色的圆
+        var circle1 = svg.append("circle")
+        .attr("cx", 100)
+        .attr("cy", 100)
+        .attr("r", 45)
+        .style("fill", "green")
+
+        /*
+        实现在1秒内将圆心坐标由100变化到300，半径缩小到25
+        并采用bounce的过渡方式将颜色由绿色变更为红色
+        * */
+        circle1.transition()                                //启动过渡效果
+        .duration(1000)                                 //指定过渡持续时间，单位毫秒
+        .ease("bounce")                                 //指定过渡方式
+        .attr("cx", 300)
+        .attr("r", 25)
+        .style("fill", "red")
+    </script>
+</body>
+
+</html>

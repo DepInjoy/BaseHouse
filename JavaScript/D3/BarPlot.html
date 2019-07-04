@@ -13,7 +13,7 @@
 
         .axis text {
             font-family: sans-serif;
-            font-size: 11px;
+            font-size: 8px;
         }
     </style>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
@@ -110,7 +110,21 @@
             .text(function(d){
                 return d;
             })
-            .attr("fill", "white");                     //设置颜色;;
+            .attr("fill", "white")                     //设置颜色;;
+            //添加动态效果
+            .attr("y",function(d){
+                var min = yScale.domain()[0];
+                return yScale(min);
+            })
+            .transition()
+            .delay(function(d,i){
+                return i * 200;
+            })
+            .duration(2000)
+            .ease("bounce")
+            .attr("y",function(d){
+                return yScale(d);
+            });
     </script>
 </body>
 </html>

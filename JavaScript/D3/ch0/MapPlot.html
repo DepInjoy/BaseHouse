@@ -50,9 +50,7 @@
         var path = d3.geoPath().projection(projection);
 
         /**
-         * 创建marker标记，以便多个连线终点调用
-         由于会有多个物流连线的终点，所以都放在一个marker标记中调用。
-         这个标记是由中间的 圆形 + 外圈 构成。外圈的闪烁效果另外创建。
+         * 创建marker标记(圆形+外圈)，以便多个连线终点调用
          */
         marker = svg.append("defs")
             .append("marker")
@@ -83,6 +81,7 @@
         /**
          * 绘制中国地图，并标记起点（长沙）
          */
+        var color = d3.scaleOrdinal(d3.schemeCategory20b);
         var changsha = projection([112.59,28.12]);              //长沙坐标
         mapdata = [];
         d3.json('china.json', function(error, data){            // 读取地图数据，并绘制中国地图
@@ -93,7 +92,28 @@
                 .data(mapdata)
                 .enter()
                 .append("path")
-                .attr("d", path);
+                .attr("d", path)
+                .attr("fill", function (d, i) {
+                    return color(i);
+                });
+            //添加text
+            svg.selectAll("text")
+                .data(mapdata)
+                .enter()
+                .append("svg:text")
+                .text(function (d, i) {
+                    return d.properties.name
+                })
+                .attr("x", function (d) {
+                    var local = projection([d.properties.cp[0], d.properties.cp[1]])
+                    return local[0]
+                })
+                .attr("y", function (d) {
+                    var local = projection([d.properties.cp[0], d.properties.cp[1]])
+                    return local[1]
+                })
+                .attr("fill", "#FFFFFF")
+                .style("font-size", "10px")
 
             gmap.append("circle")                               //标记长沙
                 .attr("id","changsha")
