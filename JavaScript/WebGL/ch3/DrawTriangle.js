@@ -35,7 +35,7 @@ function main() {
      * 2：                   四边形
      * 3：                   飘带
      */
-    var selectedShape = 3;
+    var selectedShape = 0;
 
     //设置顶点位置
     var n = initVertexBuffer(gl, selectedShape);
