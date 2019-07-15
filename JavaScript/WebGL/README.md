@@ -5,11 +5,25 @@
 - ch5\MultiAttributeSizeInterleaving.js</br>
 功能说明：通过步进和偏移实现绘制不同位置、不同颜色的三个点或者彩色三角形
 
+- ch7 进入三维世界
+    - LookAtTriangles.js</br>
+    功能说明：绘制一个前面是蓝色、中间黄色、后面红色的三角形。
+    - LookAtRotatedTriangles.js</br>
+    功能说明：用视图矩阵*模型矩阵实现将LookAtTriangles.js绘制的三角形逆时针旋转90度。
+    - LookAtRotatedTriangleModelViewMatrix.html</br>
+    功能说明：用模型视图矩阵实现将LookAtTriangles.js绘制的三角形逆时针旋转90度，效果和LookAtRotatedTriangles.js一致。
+    
+第三方库文件
+- cuon-matrix.js
+    - Matrix4.setLookAt(eyeX,eyeY,eyeZ,atX,atY,atZ,upX,,upY,upZ):根据视点、观察点、上方向来创建视图矩阵
+        - eyeX,eyeY,eyeZ:指定视点
+        - atX,atY,atZ:指定观察点
+        - upX,,upY,upZ:指定上方向，如果上方向是Y轴正向，则(upX,,upY,upZ)是(0,1,0)
 
 接口说明
+
 - gl.vertexAttribPointer(location, size, type, normalized, stride, offset);</br>
-    将绑定至gl.ARRAY_BUFFER的缓冲区对象分配给location指定的attribute变量。</br>
-    
+    将绑定至gl.ARRAY_BUFFER的缓冲区对象分配给location指定的attribute变量。
     - location 指定待分配的attribute变量的存储位置
     - size         指定缓存区中每个顶点的分量个数
     - type         指定数据格式
@@ -23,7 +37,7 @@
         - gl.TEXTURE_2D:        二维纹理
         - gl.TEXTURE_CUBE_MAP      立方体纹理
 
-gl.texParameteri(tartget, pname, param)
+- gl.texParameteri(tartget, pname, param)
    配置纹理对象参数
    - target         gl.TEXTURE_2D或gl.TEXTURE_CUBE_MAP
    - pname          纹理参数
@@ -35,7 +49,8 @@ gl.texParameteri(tartget, pname, param)
 </br>
 
 注意事项</br>
-- 出于安全性考虑，WebGL允许使用跨域纹理图像
+- 出于安全性考虑，WebGL允许使用跨域纹理图像。
+- GLSL ES中的变量不能以gl_、wbgl_、_webgl_开头，这些开头已经被OPenGL ES保留位关键字。
 
 问题附录</br>
 
