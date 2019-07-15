@@ -16,6 +16,17 @@
 	**/
 	\d 't*'
 	\t 's?'
+-- 查看帮助信息
+	-- 显示所有SQL命令
+	\h
+	-- 显示全部命令
+	\h *
+	-- 显示相应命令名称的帮助说明
+	\h 命令名称
+
+-- 设置客户端的编码
+	\encoding gbk
+	\encoding utf8 -- 一般中文用utf8
 
 -- 创建用户
 	-- 创建用户
@@ -46,17 +57,18 @@
 	ALTER USER username WITH PASSWORD newpassword;
 	ALTER ROLE u1 WITH PASSWORD newpassword;
 
--- 创建数据库
-	CREATE DATABASE dbname;
-
--- 修改数据库
-	-- 修改列的数据类型
-	ALTER TABLE table_name ALTER COLUMN column_name TYPE datatype;
-
 -- 删除用户
 	DROP USER username;
 	-- 删除角色
 	DROP ROLE rolename;
+
+-- 创建数据库
+	CREATE DATABASE dbname;
+	CREATE DATABASE dbname WITH ENCODING 'utf8';
+
+-- 修改数据库
+	-- 修改列的数据类型
+	ALTER TABLE table_name ALTER COLUMN column_name TYPE datatype;
 
 -- 切换数据库/用户
 	-- 切换至databasename的数据库
