@@ -1,8 +1,11 @@
+WebGL是一种3D绘图协议。
+
 代码主要模块：
-- ch5\MultiAttributeSize.js</br>
+
+- ch5\MultiAttributeSize.js<br/>
 功能说明：将非坐标数据(点的大小)传递给顶点着色器
 
-- ch5\MultiAttributeSizeInterleaving.js</br>
+- ch5\MultiAttributeSizeInterleaving.js<br/>
 功能说明：通过步进和偏移实现绘制不同位置、不同颜色的三个点或者彩色三角形
 
 - ch7 进入三维世界
@@ -12,6 +15,18 @@
     功能说明：用视图矩阵*模型矩阵实现将LookAtTriangles.js绘制的三角形逆时针旋转90度。
     - LookAtRotatedTriangleModelViewMatrix.html</br>
     功能说明：用模型视图矩阵实现将LookAtTriangles.js绘制的三角形逆时针旋转90度，效果和LookAtRotatedTriangles.js一致。
+    - LookAtTriangles.js<br/>
+    功能说明：绘制一个前面是蓝色、中间黄色、后面红色的三角形。
+    - LookAtRotatedTriangles.js<br/>
+    功能说明：用视图矩阵*模型矩阵实现将LookAtTriangles.js绘制的三角形逆时针旋转90度。
+    - LookAtRotatedTriangleModelViewMatrix.html<br/>
+    功能说明：用模型视图矩阵实现将LookAtTriangles.js绘制的三角形逆时针旋转90度，效果和LookAtRotatedTriangles.js一致。
+    - LookAtTrianglesWithKey.js<br/>
+    功能说明：实现在LookAtTriangles.js绘制的三角形，可以通过鼠标的上下、左右按键控制其X、Y的位置。
+    - OrthoView.js<br/>
+    功能说明：辅助理解盒型视图空间，可以通过上下、左右按键控制近边界和远边界。
+    - LookAtTriangleWithKeysWithViewVolume.js<br/>
+    功能说明：在LookAtTrianglesWithKey.js基础之上引入正射投影矩阵
     
 第三方库文件
 - cuon-matrix.js
@@ -23,6 +38,13 @@
 接口说明
 
 - gl.vertexAttribPointer(location, size, type, normalized, stride, offset);</br>
+    - Matrix4.setOrtho(left, right, bottom, top, near, far)
+        通过各参数计算正投影矩阵
+        - left, right:  指定可视空间的近裁面的左边界和右边界
+        - bottom, top:  指定可视空间的近裁面的上下边界
+        - near, far:    指定可视空间的近边界和远边界
+接口说明
+- gl.vertexAttribPointer(location, size, type, normalized, stride, offset);<br/>
     将绑定至gl.ARRAY_BUFFER的缓冲区对象分配给location指定的attribute变量。
     - location 指定待分配的attribute变量的存储位置
     - size         指定缓存区中每个顶点的分量个数
@@ -46,15 +68,15 @@
     - gl.TEXTURE_WRAP_S:        水平填充法,默认值gl.REPEAT
     - gl.TEXTURE_WRAP_T:        垂直填充法,默认值gl.REPEAT
    - param          纹理参数的值
-</br>
+<br/>
 
-注意事项</br>
+注意事项<br/>
 - 出于安全性考虑，WebGL允许使用跨域纹理图像。
 - GLSL ES中的变量不能以gl_、wbgl_、_webgl_开头，这些开头已经被OPenGL ES保留位关键字。
 
-问题附录</br>
+问题附录<br/>
 
-- failed to compile shader: ERROR: 0:1: '' : No precision specified for (float)</br>
+- failed to compile shader: ERROR: 0:1: '' : No precision specified for (float)<br/>
 
 在着色器程序中添加：
 ```$JavaScript
@@ -63,7 +85,7 @@
 #endif
 ```
 
-</br>
+<br/>
 学习资源
 
 - [MDN API接口](https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/vertexAttribPointer)
