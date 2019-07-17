@@ -27,6 +27,11 @@ WebGL是一种3D绘图协议。
     功能说明：辅助理解盒型视图空间，可以通过上下、左右按键控制近边界和远边界。
     - LookAtTriangleWithKeysWithViewVolume.js<br/>
     功能说明：在LookAtTrianglesWithKey.js基础之上引入正射投影矩阵
+    - PerspectiveView.js<br/>
+    功能说明：透视投影矩阵调用显示左右各三个三角形示例，同时支持上下、左右按键控制视图。
+    - PerspectiveViewWithVMP.js<br/>
+    功能说明：通过透视矩阵、视图矩阵和模型矩阵实现通过复制显示在左右两侧各三个三角形，效果和PerspectiveView.js的效果一致。
+    
     
 第三方库文件
 - cuon-matrix.js
@@ -34,15 +39,17 @@ WebGL是一种3D绘图协议。
         - eyeX,eyeY,eyeZ:指定视点
         - atX,atY,atZ:指定观察点
         - upX,,upY,upZ:指定上方向，如果上方向是Y轴正向，则(upX,,upY,upZ)是(0,1,0)
-
-接口说明
-
-- gl.vertexAttribPointer(location, size, type, normalized, stride, offset);</br>
-    - Matrix4.setOrtho(left, right, bottom, top, near, far)
-        通过各参数计算正投影矩阵
+    
+    - Matrix4.setOrtho(left, right, bottom, top, near, far)通过各参数计算正投影矩阵
         - left, right:  指定可视空间的近裁面的左边界和右边界
         - bottom, top:  指定可视空间的近裁面的上下边界
         - near, far:    指定可视空间的近边界和远边界
+    
+    - Matrix4.setPerspective(fov, aspect, near, far)通过各参数计算透视投影矩阵，将其存储在Matrix4中。<br/>
+        - fov:          指定垂直视角
+        - aspect:       指定近裁面的宽高比
+        - near, far:    指定近裁面和元裁面的位置
+
 接口说明
 - gl.vertexAttribPointer(location, size, type, normalized, stride, offset);<br/>
     将绑定至gl.ARRAY_BUFFER的缓冲区对象分配给location指定的attribute变量。
