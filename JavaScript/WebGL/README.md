@@ -31,8 +31,10 @@ WebGL是一种3D绘图协议。
     功能说明：透视投影矩阵调用显示左右各三个三角形示例，同时支持上下、左右按键控制视图。
     - PerspectiveViewWithVMP.js<br/>
     功能说明：通过透视矩阵、视图矩阵和模型矩阵实现通过复制显示在左右两侧各三个三角形，效果和PerspectiveView.js的效果一致。
-    
-    
+    - 08_DepBuffer.js<br/>
+    功能说明：开启隐藏面消除，看到的效果和PerspectiveViewWithVMP.js一样。
+    - 09_DepFlight.js<br/>
+    功能说明：避免深度冲突示例，两个Z一致的三角形制造深度冲突，然后消除。重点在于开启多边形偏移并设置多边形偏移。
 第三方库文件
 - cuon-matrix.js
     - Matrix4.setLookAt(eyeX,eyeY,eyeZ,atX,atY,atZ,upX,,upY,upZ):根据视点、观察点、上方向来创建视图矩阵
@@ -75,6 +77,16 @@ WebGL是一种3D绘图协议。
     - gl.TEXTURE_WRAP_S:        水平填充法,默认值gl.REPEAT
     - gl.TEXTURE_WRAP_T:        垂直填充法,默认值gl.REPEAT
    - param          纹理参数的值
+- gl.enable(cap) 开启cap表示的功能
+    - cap           开启需要制定的功能
+        - gl.DEPTH_TEST             隐藏面消除
+        - gl.BLEND                  混合
+        - gl.POLYGON_OFFSET_FILL    多边形位移等等
+- gl.disable(cap) 关闭cap表示的功能
+    - cap           关闭需要制定的功能
+        - gl.DEPTH_TEST             隐藏面消除
+        - gl.BLEND                  混合
+        - gl.POLYGON_OFFSET_FILL    多边形位移等等
 <br/>
 
 注意事项<br/>
