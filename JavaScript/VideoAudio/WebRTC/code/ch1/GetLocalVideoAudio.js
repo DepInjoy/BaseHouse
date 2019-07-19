@@ -1,5 +1,28 @@
 'use strict';
 
+/**
+ * 音视频检测
+ */
+function deviceDetector() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+        console.log("enumerateDevices() not supported.");
+        return false;
+    }
+
+    // List cameras and microphones.
+    navigator.mediaDevices.enumerateDevices()
+        .then(function(devices) {
+            devices.forEach(function(device) {
+                console.log(device.kind + ": " + device.label +
+                    " id = " + device.deviceId);
+            });
+        })
+        .catch(function(err) {
+            console.log(err.name + ": " + err.message);
+        });
+    return true;
+}
+
 //媒体轨限制
 const mediaStreamConstrains = {
     video: {
@@ -30,10 +53,15 @@ if(!localVideo){
 }
 
 /**
- * 功能描述：                请求camera
+ * 功能描述：                请求camera,并请求访问摄像头
  * @param mediaStream       getUserMedia方法采集到的音视频轨
  */
 function gotLocalMediaStream(mediaStream){
+    //设备检测
+    if(!deviceDetector()){
+        console.log("设备检测失败！");
+        return;
+    }
     //将视频源传递给HTML的video标签的srcObject属性
     localVideo.srcObject = mediaStream;
 }
@@ -47,7 +75,7 @@ function handleLocalMediaStreamError(error){
  * mediaStreamConstrains：       媒体轨限制
  */
 navigator.mediaDevices.getUserMedia(mediaStreamConstrains).then(
-    //陈宫获取视频处理
+    //成功获取视频处理
     gotLocalMediaStream
 ).catch(
     //错误处理
