@@ -35,6 +35,9 @@ WebGL是一种3D绘图协议。
     功能说明：开启隐藏面消除，看到的效果和PerspectiveViewWithVMP.js一样。
     - 09_DepFlight.js<br/>
     功能说明：避免深度冲突示例，两个Z一致的三角形制造深度冲突，然后消除。重点在于开启多边形偏移并设置多边形偏移。
+    - 10_HelloCube.js<br/>
+    功能说明：绘制一个立方体。
+    
 第三方库文件
 - cuon-matrix.js
     - Matrix4.setLookAt(eyeX,eyeY,eyeZ,atX,atY,atZ,upX,,upY,upZ):根据视点、观察点、上方向来创建视图矩阵
@@ -53,6 +56,12 @@ WebGL是一种3D绘图协议。
         - near, far:    指定近裁面和元裁面的位置
 
 接口说明
+- gl.drawArrays(mode, type, offset)
+- gl.drawElements()高效绘制三维图形，按照mode指定的方式根据绑定到gl.ELEMENT_ARRAY_BUFFER缓冲区中的顶点索引绘制图形。
+    - mode       指定绘制方式
+    - type：     指定索引数据的类型
+    - offset     指定索引数组中开始绘制的位置，单位：字节
+
 - gl.vertexAttribPointer(location, size, type, normalized, stride, offset);<br/>
     将绑定至gl.ARRAY_BUFFER的缓冲区对象分配给location指定的attribute变量。
     - location 指定待分配的attribute变量的存储位置
@@ -77,6 +86,7 @@ WebGL是一种3D绘图协议。
     - gl.TEXTURE_WRAP_S:        水平填充法,默认值gl.REPEAT
     - gl.TEXTURE_WRAP_T:        垂直填充法,默认值gl.REPEAT
    - param          纹理参数的值
+
 - gl.enable(cap) 开启cap表示的功能
     - cap           开启需要制定的功能
         - gl.DEPTH_TEST             隐藏面消除
