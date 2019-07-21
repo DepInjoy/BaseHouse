@@ -8,6 +8,15 @@
 - ch1
     - GetLocalVideoAudio.js<br/>
     功能描述：获取本地摄像头的音频和视频，并在html中进行播放
+    - 02_TakePhoto.js</br>
+    功能描述：实现拍照功能，并支持在网页端用css进行渲染实现滤镜效果。
+    <br/>处理步骤：<br/>
+        - 1、设置图片的滤镜处理方式。
+        - 2、从采集到的视频中获取图片，查看滤镜处理效果。
+        - 3、将处理的图片保存成文件
+    <br/>待解决的问题：<br/>
+        - 1、浏览器保存的图片，保存后效果丢失，那么如何实现对保存的图片进行滤镜处理？
+    
 
 第三方库
 - 音视频设备检测
@@ -24,4 +33,9 @@
         - 返回：成功则返回MediaStream对象；失败则会返回PermissionDeniedError或NotFoundError等错误对象。
 
 - [MediaStreamConstraints 媒体轨限制](https://w3c.github.io/mediacapture-main/getusermedia.html#mediastreamconstraints)
-    
+- 拍照(从视频流中抓取图片)
+    - ctx.drawImage(image, dx, dy, width, height)
+        - 输入参数
+            - image:一幅图片
+            - dx,dy:图片起点的x,y坐标
+            - width, height: 图片的宽度和高度   

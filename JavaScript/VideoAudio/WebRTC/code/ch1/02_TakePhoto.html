@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>照相小程序</title>
+
+    <!--
+        实现滤镜
+    -->
+    <style>
+        .none {
+            -webkit-filter: none;
+        }
+        /*
+            模糊处理
+        */
+        .blur {
+            -webkit-filter: blur(3px);
+        }
+        /*
+            灰度
+        */
+        .grayScale {
+            -webkit-filter: grayscale(1);
+        }
+        /*
+            反转
+        */
+        .invert {
+            -webkit-filter: invert(1);
+        }
+        /*
+            深褐色
+        */
+        .sepia {
+            -webkit-filter: sepia(1);
+            filter: sepia(1);
+        }
+    </style>
+
+    <script type="text/javascript" src="02_TakePhoto.js"></script>
+</head>
+
+<body onload="main()">
+    <div>
+        <video id="player"></video>
+        <canvas id="picture" width="640" height="480"></canvas>
+    </div>
+    <div>
+        <button id="takePhoto" onclick="takePhoto()">拍照</button>
+        <button id="savePhoto" onclick="savePhoto()">保存</button>
+        <select id="filter" onselect="filterPhoto()">
+            <option value="none">None</option>
+            <option value="blur">blur</option>
+            <option value="grayScale">Grayscale</option>
+            <option value="invert">Invert</option>
+            <option value="sepia">sepia</option>
+        </select>
+    </div>
+</body>
+</html>
