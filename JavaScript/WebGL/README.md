@@ -40,6 +40,10 @@ WebGL是一种3D绘图协议。
 - ch8
     - 01_LightedCube.js<br/>
     功能说明：绘制一个白色平行光照射下的红色立方体
+    - 02_LightedCubeAmbient.js<br/>
+    功能说明：在01_LightedCube.js的基础上添加环境漫反射。
+    - 03_LightedTranslatedRotatedCube.js
+    功能说明：立方体沿着Z轴旋转90度，然后沿着y轴平移1个单位。
     
 第三方库文件
 - cuon-matrix.js
