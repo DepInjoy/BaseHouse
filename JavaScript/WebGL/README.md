@@ -37,7 +37,17 @@ WebGL是一种3D绘图协议。
     功能说明：避免深度冲突示例，两个Z一致的三角形制造深度冲突，然后消除。重点在于开启多边形偏移并设置多边形偏移。
     - 10_HelloCube.js<br/>
     功能说明：绘制一个立方体。
-    
+- ch8
+    - 01_LightedCube.js<br/>
+    功能说明：绘制一个白色平行光照射下的红色立方体
+    - 02_LightedCubeAmbient.js<br/>
+    功能说明：在01_LightedCube.js的基础上添加环境漫反射。
+    - 03_LightedTranslatedRotatedCube.js<br/>
+    功能说明：立方体沿着Z轴旋转90度，然后沿着y轴平移1个单位。
+    - 04_PointLightedCube.js<br/>
+    功能说明：绘制一个点光源照射下的红色立方体，并以固定速率旋转。
+    - 05_PointLightedCubePreFragment.js<br/>
+    功能说明：效果同04_PointLightedCube.js，通过逐片元实现的，效果更接近真实情况。
 第三方库文件
 - cuon-matrix.js
     - Matrix4.setLookAt(eyeX,eyeY,eyeZ,atX,atY,atZ,upX,,upY,upZ):根据视点、观察点、上方向来创建视图矩阵
