@@ -19,6 +19,7 @@ function deviceDetector() {
         })
         .catch(function(err) {
             console.log(err.name + ": " + err.message);
+            return false;
         });
     return true;
 }
@@ -31,7 +32,7 @@ const mediaStreamConstrains = {
         },
         width: {
             min:                640,        //宽度最小值
-            ideal:              1280        //理想宽度
+            ideal:              1280,       //理想宽度
         },
         height: {
             min:                360,        //高度最小值
