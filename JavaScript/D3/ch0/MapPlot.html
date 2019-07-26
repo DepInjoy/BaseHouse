@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>地图</title>
+    <script type="text/javascript" src="http://d3js.org/d3.v4.js" charset="utf-8"></script>
+</head>
+<body>
+    <div class="fxmap"></div>
+    <script type="text/javascript">
+        /**
+         *  创建一个SVG
+         **/
+        var width=1000 , height=800;
+        var svg = d3.select("body div.fxmap")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+           .style("background","#000");
+        /**
+            创建SVG图形分组
+            @param gmp         保存背景地图和起点标记。
+            @param mline       保存起始点和目标点之间的连线，以及目标点。
+            @param buttion     测试按钮
+         **/
+        var gmap = svg.append("g")
+            .attr("id", "map")
+            .attr("stroke", "white")
+            .attr("stroke-width",1);
+        var mline = svg.append("g")
+            .attr("id", "moveto")
+            .attr("stroke", "#FFF")
+            .attr("stroke-width", 1.5)
+            .attr("fill","#FFF");
+        var button = svg.append("g")
+            .attr("id", "button")
+            .attr("stroke", "white")
+            .attr("stroke-width", 1)
+            .attr("fill", "white");
+        /**
+         * 创建投影函数并生成地理路径生成器
+                d3js提供了比较丰富的投影方法，本例中使用了geoEquirectangular()方法。
+         @param projection      将经纬度转换为平面二维平面坐标的方法
+         @param path            将地理数据转化为SVG中path元素路径值
+         */
+        var projection = d3.geoEquirectangular()
+            .center([112.59,28.12])                                 //设定地图中心，当前是长沙
+            .scale(height)                                          //设定放大比例
+            .translate([width / 2, height / 2]);                    //设定平移
+        var path = d3.geoPath().projection(projection);
+
+        /**
+         * 创建marker标记(圆形+外圈)，以便多个连线终点调用
+         */
+        marker = svg.append("defs")
+            .append("marker")
+            .append("marker")
+            .attr("id", "pointer")
+            .attr("viewBox","0 0 12 12")    // 可见范围
+            .attr("markerWidth","12")        // 标记宽度
+            .attr("markerHeight","12")       // 标记高度
+            .attr("orient", "auto")
+            .attr("markerUnits", "strokeWidth") // 随连接线宽度进行缩放
+            .attr("refX", "6")              // 连接点坐标
+            .attr("refY", "6")
+
+        marker.append("circle")                                     //绘制标记中心圆
+            .attr("cx", "6")
+            .attr("cy", "6")
+            .attr("r", "3")
+            .attr("fill", "white");
+
+        marker.append("circle")                                     //绘制标记外圆
+            .attr("id", "markerC")
+            .attr("cx", "6")
+            .attr("cy", "6")
+            .attr("r", "5")
+            .attr("fill-opacity", "0")
+            .attr("stroke-width", "1")
+            .attr("stroke", "white");
+        /**
+         * 绘制中国地图，并标记起点（长沙）
+         */
+        var color = d3.scaleOrdinal(d3.schemeCategory20b);
+        var changsha = projection([112.59,28.12]);              //长沙坐标
+        mapdata = [];
+        d3.json('china.json', function(error, data){            // 读取地图数据，并绘制中国地图
+            if (error)
+                console.log(error);
+            mapdata = data.features;                            // 读取地图数据
+            gmap.selectAll("path")                              // 绘制地图
+                .data(mapdata)
+                .enter()
+                .append("path")
+                .attr("d", path)
+                .attr("fill", function (d, i) {
+                    return color(i);
+                });
+            //添加text
+            svg.selectAll("text")
+                .data(mapdata)
+                .enter()
+                .append("svg:text")
+                .text(function (d, i) {
+                    return d.properties.name
+                })
+                .attr("x", function (d) {
+                    var local = projection([d.properties.cp[0], d.properties.cp[1]])
+                    return local[0]
+                })
+                .attr("y", function (d) {
+                    var local = projection([d.properties.cp[0], d.properties.cp[1]])
+                    return local[1]
+                })
+                .attr("fill", "#FFFFFF")
+                .style("font-size", "10px")
+
+            gmap.append("circle")                               //标记长沙
+                .attr("id","changsha")
+                .attr("cx", changsha[0])
+                .attr("cy", changsha[1])
+                .attr("r", "6")
+                .attr("fill", "yellow");
+
+            gmap.append("circle")
+                .attr("id","changshaC")
+                .attr("cx", changsha[0])
+                .attr("cy", changsha[1])
+                .attr("r", "10")
+                .attr("stroke-width", "2")
+                .attr("fill-opacity", "0");
+        });
+        /**
+         * 创建方法，绘制一条从指定起点到终点的连线，并在终点绘制marker标记。
+         方法需要输入终点城市名称(city)和经纬度(data)
+         调用之前建立的project()方法，将终点经纬度转换为平面坐标。
+         计算起点（长沙）和终点之前的距离，做为线条长度和动画时间参数。
+         在线条上绘制一个圆形标记，并实现从起点到终点的移动动画。
+         标记移动到终点后，即删除，节省资源。
+         如果线点在之前已经绘制过，则不绘线条，只绘制移动标记。
+         每处理一次物流单，则城市记录+1。
+         */
+            // 创建对象，保存每个城市的物流记录数量
+        var citylist = new Object();
+        // 创建方法，输入data坐标，绘制发射线
+        var moveto = function(city, data){
+            var pf = {x:projection([112.59,28.12])[0], y:projection([112.59,28.12])[1]};
+            var pt = {x:projection(data)[0], y:projection(data)[1]};
+            var distance = Math.sqrt(Math.pow((pt.x - pf.x), 2) + Math.pow((pt.y - pf.y), 2));
+            if (city in citylist){
+                citylist[city]++;
+            }else{
+                mline.append("line")
+                    .attr("x1", pf.x)
+                    .attr("y1", pf.y)
+                    .attr("x2", pt.x)
+                    .attr("y2", pt.y)
+                    .attr("marker-end","url(#pointer)")
+                    .style("stroke-dasharray", " "+distance+", "+distance+" ")
+                    .transition()
+                    .duration(distance*30)
+                    .styleTween("stroke-dashoffset", function(){
+                        return d3.interpolateNumber(distance, 0);
+                    });
+                citylist[city] = 1;
+            };
+            mline.append("circle")
+                .attr("cx", pf.x)
+                .attr("cy", pf.y)
+                .attr("r", 3)
+                .transition()
+                .duration(distance*30)
+                .attr("transform", "translate("+(pt.x-pf.x)+","+(pt.y-pf.y)+")")
+                .remove();
+        };
+        /**
+         *创建动画队例，实现标记外圈的闪烁效果
+         */
+        var scale = d3.scaleLinear();
+        scale.domain([0, 1000, 2000])
+            .range([0, 1, 0]);
+        var start = Date.now();
+        d3.timer(function(){                                    //添加marker闪烁效果
+            var s1 = scale((Date.now() - start)%2000);
+            gmap.select("circle#changshaC")
+                .attr("stroke-opacity", s1);
+            marker.select("circle#markerC")
+                .attr("stroke-opacity", s1);
+        });
+        /**
+         * 创建测试按钮和测试的目标城市数据
+         */
+        var cityordinate = {
+            '哈尔滨':[126.5416150000,45.8088260000],
+            '石家庄':[116.46,39.92],
+            '北京':[116.39564503787867,39.92998577808024],
+            '上海':[121.480539,31.235929],
+            '广州':[113.271431,23.135336],
+            '重庆':[106.558434,29.568996],
+            '青岛':[120.38442818368189,36.10521490127382],
+            '福州':[119.30347,26.080429],
+            '兰州':[103.840521,36.067235],
+            '贵阳':[106.636577,26.653325],
+            '成都':[104.081534,30.655822],
+            '西安':[108.946466,34.347269],
+            '长春':[125.3306020000,43.8219540000],
+            '台湾':[120.961454,23.80406],
+            '呼和浩特':[111.7555090000,40.8484230000],
+            '澳门':[113.5494640000,22.1929190000],
+            '武汉':[114.3115820000,30.5984670000],
+            '昆明':[102.71460113878045,25.049153100453159],
+            '乌鲁木齐':[87.56498774111579,43.84038034721766],
+            '益阳':[112.36654664522563,28.58808777988717],
+            '南京':[118.77807440802562,32.05723550180587],
+            '武昌':[114.35362228468498,30.56486029278519],
+        };
+
+        // 随机获得目标城市
+        var cityname = [], total = 0;
+        for (var key in cityordinate){
+            cityname[total++] = key;
+        };
+
+        // 创建操作按钮，每次点击发射一条物流线
+        button.append("circle")
+            .attr("cx", width*0.9)
+            .attr("cy", height*0.8)
+            .attr("r", width/20)
+            .attr("text","click")
+            .attr("fill", "grey");
+        button.append("text")
+            .attr("x", width*0.87)
+            .attr("y", height*0.81)
+            .style("font-size", "30px")
+            .text("click");
+        button.on("click", function(){
+            var _index = ~~(Math.random() * total);
+            moveto(cityname[_index], cityordinate[cityname[_index]]);
+        });
+    </script>
+</body>
+</html>
