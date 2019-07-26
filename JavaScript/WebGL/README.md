@@ -48,6 +48,9 @@ WebGL是一种3D绘图协议。
     功能说明：绘制一个点光源照射下的红色立方体，并以固定速率旋转。
     - 05_PointLightedCubePreFragment.js<br/>
     功能说明：效果同04_PointLightedCube.js，通过逐片元实现的，效果更接近真实情况。
+- ch9
+    - 01_JointModel.js<br/>
+    功能说明：绘制两个链接在一起的机械臂，同时支持左右上下按键进行控制。
 第三方库文件
 - cuon-matrix.js
     - Matrix4.setLookAt(eyeX,eyeY,eyeZ,atX,atY,atZ,upX,,upY,upZ):根据视点、观察点、上方向来创建视图矩阵
