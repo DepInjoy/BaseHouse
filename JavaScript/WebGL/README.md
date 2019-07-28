@@ -51,6 +51,9 @@ WebGL是一种3D绘图协议。
 - ch9
     - 01_JointModel.js<br/>
     功能说明：绘制两个链接在一起的机械臂，同时支持左右上下按键进行控制。
+    - ch9/02_MultiJointModel.js<br/>
+    功能说明：绘制一个多个关节的机械臂，支持z、x、c、v按键和上下左右按键进行控制。
+    
 第三方库文件
 - cuon-matrix.js
     - Matrix4.setLookAt(eyeX,eyeY,eyeZ,atX,atY,atZ,upX,,upY,upZ):根据视点、观察点、上方向来创建视图矩阵

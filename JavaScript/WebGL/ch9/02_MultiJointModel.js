@@ -59,13 +59,23 @@ var lightObj = {
 
 //层级参数
 var layer = {
-    arm1Angle : 0.0,                //arm1的当前角度
-    jointAngle : 0.0,               //joint1的当前角度(arm2的角度)
     baseLength : 2.0,
+    arm1Angle : 0.0,                //arm1的当前角度
     arm1Length : 12.0,
+    jointAngle : 0.0,               //joint1的当前角度(arm2的角度)
     arm2Length : 10.0,
+    joint1Angle: 0.0,
+    plamLength : 2.0,
+    palmJointAngle: 0.0,
+    finger1JointAngle:  0.0,
+    finger2JointAngle:  0.0,
+    fingerLength: 2.0,
     angleStep : 3.0                 //每次按键转动的角度
 };
+
+//存储矩阵的栈
+var g_matrixStack = [];
+
 function main() {
     var canvas = document.getElementById("webgl")
     if (!canvas || !canvas.getContext) {
@@ -140,6 +150,24 @@ function keydown(ev, gl, n, MVPObj, u_MVPMatrix, u_NormalMatrix) {
             break;
         case 39:    //向右，arm1绕Y轴正向运动
             layer.arm1Angle = (layer.arm1Angle + layer.angleStep) % 360;
+            break;
+        case 90:    //z,手掌正向转动
+            layer.palmJointAngle = (layer.palmJointAngle + layer.angleStep) % 360;
+            break;
+        case 88:    //x,手掌反向转动
+            layer.palmJointAngle = (layer.palmJointAngle + layer.angleStep) % 360;
+            break;
+        case 86:    //v,手指正向转动
+            if(layer.finger1JointAngle < 60){
+                layer.finger1JointAngle += layer.angleStep;
+                layer.finger2JointAngle = -1 * layer.finger1JointAngle;
+            }
+            break;
+        case 67://c，手指反向转动
+            if(layer.finger1JointAngle > -60){
+                layer.finger1JointAngle -= layer.angleStep;
+                layer.finger2JointAngle = -1 * layer.finger1JointAngle;
+            }
             break;
         default:
             console.log("未知的键盘输入，不处理！");
@@ -223,14 +251,14 @@ function initArrayBuffer (gl, data, name, num, type, stride, offset) {
 function initVertexBuffers(gl) {
     //顶点坐标和颜色
     var verticesColors = new Float32Array([
-        1.5,    10.0,   1.5,    1.0,    0.4,    0.0,    //0
-        -1.5,   10.0,   1.5,    1.0,    0.4,    0.0,    //1
-        -1.5,   0.0,    1.5,    1.0,    0.4,    0.0,    //2
-        1.5,    0.0,    1.5,    1.0,    0.4,    0.0,    //3
-        1.5,    0.0,    -1.5,   1.0,    0.4,    0.0,    //4
-        1.5,    10.0,   -1.5,   1.0,    0.4,    0.0,    //5
-        -1.5,   10.0,   -1.5,   1.0,    0.4,    0.0,    //6
-        -1.5,   0.0,    -1.5,   1.0,    0.4,    0.0     //7
+        0.5,    1.0,   0.5,    1.0,    0.4,    0.0,    //0
+        -0.5,   1.0,   0.5,    1.0,    0.4,    0.0,    //1
+        -0.5,   0.0,    0.5,    1.0,    0.4,    0.0,    //2
+        0.5,    0.0,    0.5,    1.0,    0.4,    0.0,    //3
+        0.5,    0.0,    -0.5,   1.0,    0.4,    0.0,    //4
+        0.5,    1.0,   -0.5,   1.0,    0.4,    0.0,    //5
+        -0.5,   1.0,   -0.5,   1.0,    0.4,    0.0,    //6
+        -0.5,   0.0,    -0.5,   1.0,    0.4,    0.0     //7
     ]);
 
     //顶点索引
@@ -291,11 +319,34 @@ function setMVPMatrix(gl, u_MVPMatrix, u_NormalMatrix) {
     gl.uniformMatrix4fv(u_MVPMatrix, false, MVPObj.MVPMatrix().elements);
 
     /** 给法向量矩阵赋值 */
-        //model逆转置,给用于变换法向量的矩阵赋值
+    //model逆转置,给用于变换法向量的矩阵赋值
     var reverseModelMat = new Matrix4().setInverseOf(MVPObj.modelMatrix).transpose();
     gl.uniformMatrix4fv(u_NormalMatrix, false, reverseModelMat.elements);
 }
 
+/**
+ * 功能说明：                将矩阵压栈
+ * @param matrix            矩阵
+ */
+function pushMatrix(matrix) {
+    var tmp = new Matrix4(matrix);
+    g_matrixStack.push(tmp);
+}
+
+/**
+ * 功能说明：                将矩阵从栈中弹出
+ */
+function popMatrix() {
+   return g_matrixStack.pop();
+}
+
+function drawBox(gl, n, width, height, depth, u_MVPMatrix, u_NormalMatrix) {
+    pushMatrix(MVPObj.modelMatrix);
+    MVPObj.modelMatrix.scale(width, height, depth);
+    setMVPMatrix(gl, u_MVPMatrix, u_NormalMatrix);
+    MVPObj.modelMatrix.set(popMatrix());
+    gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0);
+}
 /**
  *  绘制图形
  * @param gl                绘图上下文
@@ -307,23 +358,36 @@ function draw(gl, n, MVPObj, u_MVPMatrix, u_NormalMatrix) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     //Base
-    MVPObj.modelMatrix.setTranslate(0.0, -1 * layer.arm1Length, 0.0)
-        .rotate(layer.arm1Angle, 0.0, 1.0, 0.0)
-        .scale(3, 0.2, 3);
-    setMVPMatrix(gl, u_MVPMatrix, u_NormalMatrix);
-    gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0);
+    MVPObj.modelMatrix.setTranslate(0.0, -12.0, 0.0);
+    drawBox(gl, n ,10.0, layer.baseLength, 10.0, u_MVPMatrix, u_NormalMatrix);
 
     //Arm1
     MVPObj.modelMatrix.translate(0.0, layer.baseLength, 0.0)
-        .rotate(layer.arm1Angle, 0.0, 1.0, 0.0)
-        .scale(0.3, 5, 0.3);
-    setMVPMatrix(gl, u_MVPMatrix, u_NormalMatrix);
-    gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0);
+        .rotate(layer.arm1Angle, 0.0, 1.0, 0.0);
+    drawBox(gl, n, 3.0, layer.arm1Length, 3.0, u_MVPMatrix, u_NormalMatrix);
 
     //Arm2
+    MVPObj.modelMatrix.translate(0.0, layer.arm1Length, 0.0)
+        .rotate(layer.jointAngle, 0.0, 0.0, 1.0);                //绕着Z轴旋转
+    drawBox(gl, n, 4.0, layer.arm2Length, 4.0, u_MVPMatrix, u_NormalMatrix);
+
+    //手掌
     MVPObj.modelMatrix.translate(0.0, layer.arm2Length, 0.0)
-        .rotate(layer.jointAngle, 0.0, 0.0, 1.0)                //绕着Z轴旋转
-        .scale(1.3, 1.0, 1.3);                                  //加粗立方体
-    setMVPMatrix(gl, u_MVPMatrix, u_NormalMatrix);
-    gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0);
+        .rotate(layer.palmJointAngle, 0.0, 1.0 ,0.0);
+    drawBox(gl, n, 6.0, layer.plamLength, 2.0, u_MVPMatrix, u_NormalMatrix);
+
+    //手指
+    MVPObj.modelMatrix.translate(0.0, layer.plamLength, 0.0)
+
+    //finger 1
+    pushMatrix(MVPObj.modelMatrix);
+    MVPObj.modelMatrix.translate(2.0, 0.0, 0.0)
+        .rotate(layer.finger1JointAngle, 0.0, 0.0, 1.0);
+    drawBox(gl, n, 1.0, layer.fingerLength, 1.0, u_MVPMatrix, u_NormalMatrix);
+    MVPObj.modelMatrix.set(popMatrix());
+
+    //finger 2
+    MVPObj.modelMatrix.translate(-2.0, 0.0, 0.0)
+        .rotate(layer.finger2JointAngle, 0.0, 0.0, 1.0);
+    drawBox(gl, n, 1.0, layer.fingerLength, 1.0, u_MVPMatrix, u_NormalMatrix);
 }
