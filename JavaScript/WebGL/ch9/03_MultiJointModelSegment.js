@@ -244,23 +244,103 @@ function initArrayBuffer (gl, data, name, num, type, stride, offset) {
 }
 
 /**
+ * 功能说明：                创建对象缓冲区对象,并将值写入缓冲区对象
+ * @param gl                WebGL渲染上下文
+ * @param data              欲写入的数据
+ * @param num               点数
+ * @param type              指定缓存区中每个顶点的分量个数
+ * @returns {AudioBuffer | WebGLBuffer}
+ */
+function initArrayBufferForLatterUse (gl, data, num, type){
+    var vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    vertexBuffer.num = num;
+    vertexBuffer.type = type;
+    return vertexBuffer;
+}
+
+/**
  *  功能说明：           初始化顶点的位置和颜色
  * @param gl            WebGL绘图上下文
  * @returns {number}    顶点个数，-1表示初始化失败
  */
+var g_baseBuffer = null;                // Base缓冲区对象
+var g_arm1Buffer = null;                // Arm1缓冲区对象
+var g_arm2Buffer = null;                // Arm2缓冲区对象
+var g_palmBuffer = null;                // Palm缓冲区对象
+var g_fingerBuffer = null;              // Finger1和finger2缓冲区对象
 function initVertexBuffers(gl) {
-    //顶点坐标和颜色
-    var verticesColors = new Float32Array([
-        0.5,    1.0,    0.5,    1.0,    0.4,    0.0,    //0
-        -0.5,   1.0,    0.5,    1.0,    0.4,    0.0,    //1
-        -0.5,   0.0,    0.5,    1.0,    0.4,    0.0,    //2
-        0.5,    0.0,    0.5,    1.0,    0.4,    0.0,    //3
-        0.5,    0.0,    -0.5,   1.0,    0.4,    0.0,    //4
-        0.5,    1.0,    -0.5,   1.0,    0.4,    0.0,    //5
-        -0.5,   1.0,    -0.5,   1.0,    0.4,    0.0,    //6
-        -0.5,   0.0,    -0.5,   1.0,    0.4,    0.0     //7
+    //顶点的位置和颜色
+    var colors = new Float32Array([
+        1.0,    0.4,    0.0,    //0
+        1.0,    0.4,    0.0,    //1
+        1.0,    0.4,    0.0,    //2
+        1.0,    0.4,    0.0,    //3
+        1.0,    0.4,    0.0,    //4
+        1.0,    0.4,    0.0,    //5
+        1.0,    0.4,    0.0,    //6
+        1.0,    0.4,    0.0     //7
+    ]);
+    //Base 10*10*2
+    var verticesColorsBase = new Float32Array([
+        5.0,    2.0,    5.0,        //0
+        -5.0,   2.0,    5.0,        //1
+        -5.0,   0.0,    5.0,        //2
+        5.0,    0.0,    5.0,        //3
+        5.0,    0.0,    -5.0,       //4
+        5.0,    2.0,    -5.0,       //5
+        -5.0,   2.0,    -5.0,       //6
+        -5.0,   0.0,    -5.0        //7
     ]);
 
+    //Arm1,3*3*12
+    var verticesColorsArm1 = new Float32Array([
+        1.5,    12.0,   1.5,        //0
+        -1.5,   12.0,   1.5,        //1
+        -1.5,   0.0,    1.5,        //2
+        1.5,    0.0,    1.5,        //3
+        1.5,    0.0,    -1.5,       //4
+        1.5,    12.0,   -1.5,       //5
+        -1.5,   12.0,   -1.5,       //6
+        -1.5,   0.0,    -1.5        //7
+    ]);
+
+    //Arm2, 4*4*10
+    var verticesColorsArm2 = new Float32Array([
+        2.0,    10.0,   2.0,        //0
+        -2.0,   10.0,   2.0,        //1
+        -2.0,   0.0,    2.0,        //2
+        2.0,    0.0,    2.0,        //3
+        2.0,    0.0,    -2.0,       //4
+        2.0,    10.0,   -2.0,       //5
+        -2.0,   10.0,   -2.0,       //6
+        -2.0,   0.0,    -2.0        //7
+    ]);
+
+    //Palm, 6*2*2
+    var verticesColorsPalm = new Float32Array([
+        3.0,    2.0,    1.0,        //0
+        -3.0,   2.0,    1.0,        //1
+        -3.0,   0.0,    1.0,        //2
+        3.0,    0.0,    1.0,        //3
+        3.0,    0.0,    -1.0,       //4
+        3.0,    2.0,    -1.0,       //5
+        -3.0,   2.0,    -1.0,       //6
+        -3.0,   0.0,    -1.0        //7
+    ]);
+
+    //Finger,1*2*1
+    var verticesColorsFinger = new Float32Array([
+        0.5,    2.0,    0.5,        //0
+        -0.5,   2.0,    0.5,        //1
+        -0.5,   0.0,    0.5,        //2
+        0.5,    0.0,    0.5,        //3
+        0.5,    0.0,    -0.5,       //4
+        0.5,    2.0,    -0.5,       //5
+        -0.5,   2.0,    -0.5,       //6
+        -0.5,   0.0,    -0.5        //7
+    ]);
     //顶点索引
     var indeices = new Uint8Array([
         0,  1,  2,  0,  2,  3,      //前
@@ -280,22 +360,20 @@ function initVertexBuffers(gl) {
         0.0,    -1.0,   0.0,    0.0,    -1.0,   0.0,    0.0,    -1.0,   0.0,    0.0,    -1.0,   0.0,    //下
         0.0,    0.0,    -1.0,   0.0,    0.0,    -1.0,   0.0,    0.0,    -1.0,   0.0,    0.0,    -1.0    //后
     ]);
-    var FSIZE = verticesColors.BYTES_PER_ELEMENT;
+
+    g_baseBuffer = initArrayBufferForLatterUse(gl, verticesColorsBase, 3, gl.FLOAT);
+    g_arm1Buffer = initArrayBufferForLatterUse(gl, verticesColorsArm1, 3, gl.FLOAT);
+    g_arm2Buffer = initArrayBufferForLatterUse(gl, verticesColorsArm2, 3, gl.FLOAT);
+    g_palmBuffer = initArrayBufferForLatterUse(gl, verticesColorsPalm, 3,gl.FLOAT);
+    g_fingerBuffer = initArrayBufferForLatterUse(gl, verticesColorsFinger, 3, gl.FLOAT);
+
     /** 给法向量赋值 */
     if(!initArrayBuffer(gl, normalData, 'a_Normal',
         3, gl.FLOAT, 0, 0))
         return -1;
-
-    /** 给位置赋值 */
-    if(!initArrayBuffer(gl, verticesColors, "a_Position",
-        3,  gl.FLOAT,FSIZE * 6, 0))
+    if(!initArrayBuffer(gl, colors, 'a_Color',
+        3, gl.FLOAT, 0, 0))
         return -1;
-
-    /** 给颜色赋值 */
-    if(!initArrayBuffer(gl, verticesColors, "a_Color",
-        3,  gl.FLOAT, 6 * FSIZE, 3 * FSIZE))
-        return -1;
-
     /**
      *      将顶点索引数据写入缓冲区对象
      */
@@ -337,14 +415,14 @@ function pushMatrix(matrix) {
  * 功能说明：                将矩阵从栈中弹出
  */
 function popMatrix() {
-   return g_matrixStack.pop();
+    return g_matrixStack.pop();
 }
 
-function drawBox(gl, n, width, height, depth, u_MVPMatrix, u_NormalMatrix) {
-    pushMatrix(MVPObj.modelMatrix);
-    MVPObj.modelMatrix.scale(width, height, depth);
+function drawSegment(gl, n, buffer, a_Position , u_MVPMatrix, u_NormalMatrix) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.vertexAttribPointer(a_Position, buffer.num, buffer.type, false, 0, 0);
+    gl.enableVertexAttribArray(a_Position);
     setMVPMatrix(gl, u_MVPMatrix, u_NormalMatrix);
-    MVPObj.modelMatrix.set(popMatrix());
     gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0);
 }
 /**
@@ -357,37 +435,41 @@ function drawBox(gl, n, width, height, depth, u_MVPMatrix, u_NormalMatrix) {
 function draw(gl, n, MVPObj, u_MVPMatrix, u_NormalMatrix) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+    var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+    if(a_Position < 0){
+        console.log("获取a_Position缓冲区的位置失败！");
+        return false;
+    }
     //Base
     MVPObj.modelMatrix.setTranslate(0.0, -12.0, 0.0);
-    drawBox(gl, n ,10.0, layer.baseLength, 10.0, u_MVPMatrix, u_NormalMatrix);
+    drawSegment(gl, n, g_baseBuffer, a_Position, u_MVPMatrix, u_NormalMatrix);
 
     //Arm1
     MVPObj.modelMatrix.translate(0.0, layer.baseLength, 0.0)
         .rotate(layer.arm1Angle, 0.0, 1.0, 0.0);
-    drawBox(gl, n, 3.0, layer.arm1Length, 3.0, u_MVPMatrix, u_NormalMatrix);
+    drawSegment(gl, n, g_arm1Buffer, a_Position, u_MVPMatrix, u_NormalMatrix);
 
     //Arm2
     MVPObj.modelMatrix.translate(0.0, layer.arm1Length, 0.0)
         .rotate(layer.jointAngle, 0.0, 0.0, 1.0);                //绕着Z轴旋转
-    drawBox(gl, n, 4.0, layer.arm2Length, 4.0, u_MVPMatrix, u_NormalMatrix);
+    drawSegment(gl, n, g_arm2Buffer, a_Position, u_MVPMatrix, u_NormalMatrix);
 
     //手掌
     MVPObj.modelMatrix.translate(0.0, layer.arm2Length, 0.0)
         .rotate(layer.palmJointAngle, 0.0, 1.0 ,0.0);
-    drawBox(gl, n, 6.0, layer.plamLength, 2.0, u_MVPMatrix, u_NormalMatrix);
+    drawSegment(gl, n, g_palmBuffer, a_Position, u_MVPMatrix, u_NormalMatrix);
 
     //手指
     MVPObj.modelMatrix.translate(0.0, layer.plamLength, 0.0)
 
     //finger 1
     pushMatrix(MVPObj.modelMatrix);
-    MVPObj.modelMatrix.translate(2.0, 0.0, 0.0)
+    MVPObj.modelMatrix.translate(2.0, 0, 0.0)
         .rotate(layer.finger1JointAngle, 0.0, 0.0, 1.0);
-    drawBox(gl, n, 1.0, layer.fingerLength, 1.0, u_MVPMatrix, u_NormalMatrix);
+    drawSegment(gl, n, g_fingerBuffer, a_Position, u_MVPMatrix, u_NormalMatrix);
     MVPObj.modelMatrix.set(popMatrix());
-
     //finger 2
-    MVPObj.modelMatrix.translate(-2.0, 0.0, 0.0)
+    MVPObj.modelMatrix.translate(-2.0, 0, 0.0)
         .rotate(layer.finger2JointAngle, 0.0, 0.0, 1.0);
-    drawBox(gl, n, 1.0, layer.fingerLength, 1.0, u_MVPMatrix, u_NormalMatrix);
+    drawSegment(gl, n, g_fingerBuffer, a_Position, u_MVPMatrix, u_NormalMatrix);
 }
