@@ -1,7 +1,7 @@
 //顶点着色器
 var VSHADER_SOURCE =
     'attribute vec4 a_Position;' +
-    'attribute vec4 a_Color;' +             //表面基地色
+    'attribute vec4 a_Color;' +             //表面基底色
     'attribute vec4 a_Normal;' +            //法向量
     'uniform mat4 u_NormalMatrix;' +        //用于计算法向量的矩阵
     'uniform mat4 u_MVPMatrix;' +
