@@ -1,0 +1,7 @@
+- css:Echarts自带的css文件
+- data:含自带数据的js文件
+- html:含可视化成果网页
+- js:Echarts工具包及其其余必备工具包
+- set:可视化参数，一般修改该文件进行参数设置。
+	- mapStyle:百度地图样式，样式选择可以到 [百度地图个性化模板列表](http://lbsyun.baidu.com/custom/list.htm)进行选择。
+- data_shp:加载的数据，用QGIS打开，打开属性表，如果显示乱码，选择属性->源->设置编码格式为GBK。[geojson在线转化网址](http://mapshaper.org/)转化为json文件,替换data中的数据
