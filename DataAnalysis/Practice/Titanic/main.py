@@ -8,12 +8,12 @@ global titanic
 '''
 功能说明：           统计生还和遇难的总人数和占比的基本情况统计
 '''
-def overview():
+def overview(show = True):
     survivedNum = titanic["Survived"].sum()
     unsurvivedNum = titanic["Survived"].count() - survivedNum
     print("生还 %d 人，遇难 %d 人" % (survivedNum, unsurvivedNum))
 
-    plt.figure(figsize=(10, 5))
+    fig = plt.figure(figsize=(10, 5))
     plt.subplot(121)
     sns.countplot(x='Survived', data=titanic, order=[0, 1])
     plt.xlabel("是否生还")
@@ -29,155 +29,134 @@ def overview():
         labels=['遇难', '生还'],
         autopct='%1.1f%%')                              # 数据标签
     plt.title('生还与遇难人数占比统计')
-    plt.show()
+
+    if show:
+        plt.show()
+    else:
+        fig.savefig("titanic_overview.png")
 
 '''
 功能说明:       研究客舱级别对生还率的影响
 '''
-def PclassFact():
+def PclassFact(show = True):
     # 不同级别客舱的人数和比例
-    plt.figure(figsize=(10, 5))
-    plt.subplot(221)
+    fig = plt.figure(figsize=(10, 5))
+    plt.subplot(121)
     sns.countplot(x='Pclass', data=titanic)
     plt.xlabel("级别")
     plt.ylabel("人数")
     plt.title('海难发生前各级别客舱人数情况')
 
-    plt.subplot(222)
-    plt.pie(titanic[['Pclass', 'Survived']].groupby(['Pclass']).count(),
-            labels=['1', '2', '3'], autopct='%1.0f%%')
-    plt.show()
+    plt.subplot(122)
+    plt.pie(titanic[['Pclass', 'Survived']].groupby(['Pclass']).count(),\
+            labels=['1', '2', '3'], autopct='%0.1f%%')
+    plt.title("海难发生前各级别客舱人数占比统计")
+    print("海难发生前各客舱人数总计和占比\n", \
+          titanic[['Pclass', 'Survived']].groupby("Pclass").count())
+    if show:
+        plt.show()
+    else:
+        fig.savefig("titanic_pclass_fact0.png")
 
     # 不同级别客舱生还人数和占总生还人数的比例
-    survived[['Pclass', 'Survived']].groupby(['Pclass']).sum()
-
-    plt.figure(figsize=(10, 5))
-    plt.subplot(223)
+    fig = plt.figure(figsize=(10, 5))
+    plt.subplot(121)
     sns.countplot(x='Pclass', data=survived)
     plt.xlabel("级别")
     plt.ylabel('生还人数')
-    plt.title('级别与生还人数之间的关系')
+    plt.title('客舱级别与生还人数之间的关系')
 
-    plt.subplot(224)
+    plt.subplot(122)
     plt.pie(survived[['Pclass', 'Survived']].groupby(['Pclass']).sum(),
-            labels=['1', '2', '3'], autopct='%1.0f%%')
-    plt.show()
+            labels=['1', '2', '3'], autopct='%.1f%%')
+    plt.title('客舱级别与生还人数占比统计')
+    print("客舱级别与生还人数\n",\
+          titanic[['Pclass', 'Survived']].groupby(['Pclass']).sum())
+    if show:
+        plt.show()
+    else:
+        fig.savefig("titanic_pclass_fact1.png")
+
 
     # 不同客舱分别的生还和遇难人数及占比
-    pclass1 = titanic[titanic['Pclass'] == 1]
-    pclass2 = titanic[titanic['Pclass'] == 2]
-    pclass3 = titanic[titanic['Pclass'] == 3]
-
-    plt.figure(figsize=(10, 20))
-    plt.subplot(421)
-    sns.countplot(x='Survived', data=pclass1)
-    plt.xlabel("是否生还")
+    fig = plt.figure(figsize=(10, 5))
+    plt.subplot(121)
+    sns.countplot(x="Pclass", hue='Survived', data=titanic)
+    plt.xlabel("级别")
     plt.ylabel("人数")
-    plt.title('1级别生还与遇难人数情况')
+    plt.title('级别与是否生还人数情况统计')
 
-    plt.subplot(422)
-    plt.pie([pclass1['Survived'][pclass1['Survived'] == 0].count(), \
-        pclass1['Survived'][pclass1['Survived'] == 1].count()], \
-        labels=['遇难', '生还'], autopct='%1.0f%%')
-
-    plt.subplot(423)
-    sns.countplot(x='Survived', data=pclass2)
-    plt.xlabel("是否生还")
-    plt.ylabel("人数")
-    plt.title('2级别生还与遇难人数情况')
-
-    plt.subplot(424)
-    plt.pie([pclass2['Survived'][pclass2['Survived'] == 0].count(), \
-        pclass2['Survived'][pclass2['Survived'] == 1].count()], \
-        labels=['遇难', '生还'], autopct='%1.0f%%')
-
-    plt.subplot(425)
-    sns.countplot(x='Survived', data=pclass3)
-    plt.xlabel("是否生还")
-    plt.ylabel("人数")
-    plt.title('3级别生还与遇难人数情况')
-
-    plt.subplot(426)
-    plt.pie([pclass3['Survived'][pclass3['Survived'] == 0].count(), \
-        pclass3['Survived'][pclass3['Survived'] == 1].count()], \
-        labels=['遇难', '生还'], autopct='%1.1f%%')
-
-    plt.subplot(427)
-    survived_by_pclass = titanic.groupby('Pclass')['Survived'].mean()
-    ax = survived_by_pclass.plot(kind='bar', x="级别",\
-        title="各级别生还人数占相应级别总数情况")
-    ax.set_xlabel("级别")
-    plt.show()
+    plt.subplot(122)
+    sns.barplot(x="Pclass", y='Survived', data=titanic,\
+                ci=0)               # 允许的误差的范围,0到100的float
+    plt.xlabel("级别")
+    plt.ylabel("生还人数占比")
+    plt.title("各级别生还人数占相应级别总数情况")
+    print("各级别生还人数占相应级别总数情况\n",
+          titanic.groupby("Pclass")["Survived"].mean())
+    if show:
+        plt.show()
+    else:
+        fig.savefig("titanic_pclass_fact2.png")
 '''
 功能说明:       研究性别对生还率的影响
 '''
-def sexFact():
-    # 生还的男女数量及男女比例
-    survivedMaleNum = survived['Sex'][survived['Sex'] == 'male'].count()
-    survivedFemaleNum = survived['Sex'][survived['Sex'] == 'female'].count()
-    print("生还男性 %d, 女性 %d" % (survivedMaleNum, survivedFemaleNum))
+def sexFact(show = True):
+    # 海难发生前，男女数量及男女比例
+    maleNum = titanic['Sex'][titanic['Sex'] == 'male'].count()
+    femaleNum = titanic['Sex'][titanic['Sex'] == 'female'].count()
+    print("海难发生前，男性 %d, 女性 %d" % (maleNum, femaleNum))
 
-    plt.figure(figsize=(10, 5))
+    fig = plt.figure(figsize=(10, 5))
     plt.subplot(121)
-    sns.countplot(x='Sex', data=survived)
+    sns.countplot(x='Sex', data=titanic)
+    plt.xlabel("性别")
+    plt.ylabel("人数")
+    plt.title("海难发生前，男女数量")
+
+    plt.subplot(122)
+    plt.pie([maleNum, femaleNum], \
+            labels=['男性', '女性'], autopct='%.1f%%')
+    plt.title("海难发生前，男女占比")
+    if show:
+        plt.show()
+    else:
+        fig.savefig("titanic_sex_fact0.png")
+
+    fig = plt.figure(figsize=(10, 5))
+    plt.subplot(121)
+    sns.countplot(x='Sex', hue="Survived", data=titanic)
     plt.xlabel("性别")
     plt.ylabel("生还人数")
-    plt.title("生还者中男女数量")
+    plt.title("海难发生后，性别与是否生还统计关系")
 
     plt.subplot(122)
-    plt.pie([survivedMaleNum, survivedFemaleNum], \
-            labels=['男性', '女性'], autopct='%1.0f%%')
-    plt.title("生还者中男女占比")
-    plt.show()
-
-
-    # 男性的生还数量及生还率
-    male = titanic[titanic['Sex'] == 'male']
-
-    plt.figure(figsize=(10, 5))
-    plt.subplot(121)
-    sns.countplot(x='Survived', data=male)
-    plt.xlabel("是否生还")
-    plt.ylabel("人数")
-    plt.title("男性中生还与遇难人数")
-
-    plt.subplot(122)
-    plt.pie([male['Survived'][male['Survived'] == 0].count(), \
-        male['Survived'][male['Survived'] == 1].count()], \
-        labels=['遇难', '生还'], autopct='%1.0f%%')
-    plt.show()
-
-    # 女性的生还数量及生还率
-    female = titanic[titanic["Sex"] == "female"]
-    plt.figure(figsize=(10, 5))
-    plt.subplot(121)
-    sns.countplot(x="Survived", data=female)
-    plt.xlabel("是否生还")
-    plt.ylabel("人数")
-    plt.title("女性中生还与遇难人数")
-
-    plt.subplot(122)
-    plt.pie([female["Survived"][female["Survived"] == 0].count(), \
-            female["Survived"][female["Survived"] == 1].count()], \
-            labels=['遇难', '生还'], autopct='%1.0f%%')
-    plt.show()
-
-    survived_by_sex = titanic.groupby('Sex')['Survived'].mean()
-    survived_by_sex.plot(kind='bar')
-    plt.show()
+    sns.barplot(x="Sex", y='Survived', data=titanic, ci=0)
+    plt.xlabel("性别")
+    plt.ylabel("生还人数占比")
+    plt.title("海难发生后，性别与生还人数占比")
+    print("性别与生还人数总数和占比\n", \
+          titanic[['Sex', 'Survived']].groupby(['Sex']).sum(),
+          titanic[['Sex', 'Survived']].groupby(['Sex']).mean())
+    if show:
+        plt.show()
+    else:
+        fig.savefig("titanic_sex_fact1.png")
 
 '''
 功能说明:       研究年纪对生还率的影响
 '''
-def ageFact():
+def ageFact(show = True):
     # 研究年龄和生还率之间的关系
-
+    '''
+    年龄缺失值处理
+    '''
     # 年龄中缺失值较多，首先对缺失值处理，填充的年龄为年龄平均值的上下一个标准差范围内的随机数。
     # 求年龄的平均值，标准差以及丢失值的数量
     average_age_titanic = titanic["Age"].mean()
     std_age_titanic = titanic["Age"].std()
     count_nan_age_titanic = titanic["Age"].isnull().sum()
-    # 求年龄随机数，范围在 (mean - std， mean + std)
+    # 求年龄随机数，范围在 (mean - std, mean + std)
     rand_1 = np.random.randint(average_age_titanic - std_age_titanic, \
         average_age_titanic + std_age_titanic,\
         size=count_nan_age_titanic)
@@ -187,192 +166,151 @@ def ageFact():
     '''
     绘制年龄分布
     '''
-    plt.figure(figsize=(10, 5))
+    fig = plt.figure(figsize=(10, 5))
     plt.subplot(121)
     titanic['Age'].hist(bins=70)
     plt.xlabel('年龄')
     plt.ylabel('人数')
+    plt.title("年龄分布直方图")
 
     plt.subplot(122)
     titanic.boxplot(column='Age', showfliers=False)
-    plt.show()
-    #print(titanic['Age'].describe())
-    '''
-    count    891.000000
-    mean      29.354848
-    std       13.518461
-    min        0.420000
-    25%       20.250000
-    50%       28.000000
-    75%       37.000000
-    max       80.000000
-    '''
+    plt.title("年龄分布箱线图")
+    if show:
+        plt.show()
+    else:
+        fig.savefig("titanic_age_fact0.png")
+    print(titanic['Age'].describe())
 
 
     '''
     按照年龄，将乘客划分为儿童、少年、成年人和老年人，分析四个群体生还情况
     '''
-    children = titanic[titanic['Age'] <= 12]
-    juvenile = titanic[(titanic['Age'] > 12) & (titanic['Age'] < 18)]
-    adults = titanic[(titanic['Age'] >= 18) & (titanic['Age'] < 65)]
-    agedness = titanic[titanic['Age'] >= 65]
-
-    # 各年龄段生还人数
-    children_survived_sum = children['Survived'].sum()
-    juvenile_survived_sum = juvenile['Survived'].sum()
-    adults_survived_sum = adults['Survived'].sum()
-    agedness_survived_sum = agedness['Survived'].sum()
-    print("儿童、少年、成年人、老年人")
-    print(children_survived_sum, juvenile_survived_sum, adults_survived_sum, agedness_survived_sum)
-
-    # 各年龄段生还率
-    children_survived_rate = children["Survived"].mean()
-    juvenile_survived_rate = juvenile['Survived'].mean()
-    adults_survived_rate = adults['Survived'].mean()
-    agedness_survived_rate = agedness['Survived'].mean()
-    print(children_survived_rate, juvenile_survived_rate, adults_survived_rate, agedness_survived_rate)
-
-    x = ['儿童', '少年', '成年人', '老年人']
-    b = [children_survived_sum, juvenile_survived_sum, adults_survived_sum, agedness_survived_sum]
-    y = [children_survived_rate, juvenile_survived_rate, adults_survived_rate, agedness_survived_rate]
-    plt.figure(figsize=(12, 5))
-    plt.subplot(121)
-    # 画条
-    x_pos = list(range(len(x)))
-    rects = plt.bar(x_pos, b, align='center', alpha=0.5)
-    # 标签
-    def autolabel(rects):
-        for ii, rect in enumerate(rects):
-            height = rect.get_height()
-            plt.text(rect.get_x() + rect.get_width() / 2., 1.02 * height, '%s' % (b[ii]),
-                     ha='center', va='bottom')
-    autolabel(rects)
-
-    # 设置标题
-    plt.ylabel('生还人数')
-    plt.xticks(x_pos, x)
-
-    plt.subplot(122)
-    # 画条
-    x_pos = list(range(len(x)))
-    rects = plt.bar(x_pos, y, align='center', alpha=0.5)
-
-
-    # 标签
-    def autolabel(rects):
-        for ii, rect in enumerate(rects):
-            height = rect.get_height()
-            plt.text(rect.get_x() + rect.get_width() / 2.,\
-                     1.02 * height, '%0.3f' % (y[ii]),\
-                     ha='center', va='bottom')
-    autolabel(rects)
-
-    # 设置标题
-    plt.ylabel('生还率')
-    plt.xticks(x_pos, x)
-    plt.show()
-
     ageBins = [0, 12, 18, 65, 100]
     titanic["ageGroup"] = pd.cut(titanic["Age"], ageBins)
     ageGroupsRate = titanic.groupby("ageGroup")["Survived"].mean()
+    ageGroupsRate.index = ['儿童', '少年', '成年人', '老年人']
     ageGroupsNum = titanic.groupby("ageGroup")["Survived"].sum()
+    ageGroupsNum.index = ['儿童', '少年', '成年人', '老年人']
 
-    plt.figure(figsize=(12, 5))
+    fig = plt.figure(figsize=(12, 5))
     plt.subplot(121)
-    ageGroupsNum.plot(kind="bar")
+    ageGroupsNum.plot(kind="bar", title='四个年龄群体生还人数')
 
     plt.subplot(122)
-    ageGroupsRate.plot(kind="bar", x=['儿童', '少年', '成年人', '老年人'])
-    plt.show()
+    ageGroupsRate.plot(kind="bar", title='四个年龄群体生还率')
+    print(ageGroupsNum, ageGroupsRate)
+    if show:
+        plt.show()
+    else:
+        fig.savefig("titanic_age_fact1.png")
 
-def sibSpFact():
+def sibSpFact(show = True):
     # 分为有兄弟姐妹和没有兄弟姐妹两组
-    sibsp = titanic[titanic['SibSp'] != 0]
-    no_sibsp = titanic[titanic['SibSp'] == 0]
-    plt.figure(figsize=(10, 5))
+    titanic["hasSibSp"] = titanic['SibSp'] != 0
+
+    fig = plt.figure(figsize=(10, 5))
     plt.subplot(121)
-    sns.countplot(x='Survived', data=sibsp)
+    sns.countplot(x="hasSibSp", hue="Survived", data=titanic)
+    plt.xlabel("是否有兄弟姐妹")
+    plt.ylabel("人数")
+    plt.title("是否有兄弟姐妹和生还的关系")
 
     # 有兄弟姐妹的乘客的生还人数和生还率
     plt.subplot(122)
-    plt.pie([sibsp['Survived'][sibsp['Survived'] == 0].count(), \
-            sibsp['Survived'].sum()], \
-            labels=['No Survived', 'Survived'], autopct='%1.0f%%')
-    plt.show()
-    print(sibsp['Survived'][sibsp['Survived'] == 0].count(), sibsp['Survived'].sum())
+    sns.barplot(x="hasSibSp", y="Survived", data=titanic, ci=0)
+    plt.xlabel("是否有兄弟姐妹")
+    plt.ylabel("占比")
+    plt.title("是否有兄弟姐妹和生还率统计关系")
+    print(titanic[["hasSibSp", "Survived"]].groupby("hasSibSp").count(),
+          titanic[["hasSibSp", "Survived"]].groupby("hasSibSp").sum(),
+          titanic[["hasSibSp", "Survived"]].groupby("hasSibSp").mean())
+    if show:
+        plt.show()
+    else:
+        fig.savefig("titanic_slibsp_fact.png")
 
-    # 没有兄弟姐妹的乘客的生还人数和生还率
-    plt.figure(figsize=(10, 5))
-    plt.subplot(121)
-    sns.countplot(x='Survived', data=no_sibsp)
-
-    plt.subplot(122)
-    plt.pie([no_sibsp['Survived'][no_sibsp['Survived'] == 0].count(), \
-            no_sibsp['Survived'].sum()], \
-            labels=['No Survived', 'Survived'], autopct='%1.0f%%')
-    plt.show()
-    print(no_sibsp['Survived'].sum())
-
-def parchFact():
-    # 分为有父母子女和没有父母子女两组
-    parch = titanic[titanic['Parch'] != 0]
-    no_parch = titanic[titanic['Parch'] == 0]
-
+def parchFact(show = True, save = False):
     # 有父母子女的乘客的生还人数和生还率
-    plt.figure(figsize=(10, 5))
+    titanic["hasParch"] = titanic['Parch'] != 0
+    fig = plt.figure(figsize=(10, 5))
     plt.subplot(121)
-    sns.countplot(x='Survived', data=parch)
+    ax = sns.countplot(x='hasParch', hue='Survived', data=titanic)
+    ax.set_xlabel("是否有父母子女")
+    ax.set_ylabel("人数")
+    plt.title("是否有父母子女和是否生还人数关系")
 
     plt.subplot(122)
-    plt.pie([parch['Survived'][parch['Survived'] == 0].count(),\
-            parch['Survived'].sum()], \
-            labels=['No Survived', 'Survived'], autopct='%1.0f%%')
-    plt.show()
-    print(parch['Survived'].sum())
+    ax = sns.barplot(x='hasParch', y='Survived', data=titanic, ci=0)
+    ax.set_xlabel("是否有父母子女")
+    ax.set_ylabel("生还率")
+    plt.title("是否有父母子女和生还率关系")
+    print(titanic[['hasParch', 'Survived']].groupby("hasParch").count(),
+        titanic[['hasParch', 'Survived']].groupby("hasParch").sum(),
+        titanic[['hasParch', 'Survived']].groupby("hasParch").mean())
+    if show:
+        plt.show()
+    if save:
+        fig.savefig("titanic_parch_fact.png")
 
-    #没有父母子女的乘客的生还人数和生还率
-    plt.figure(figsize=(10, 5))
-    plt.subplot(121)
-    sns.countplot(x='Survived', data=no_parch)
+def fareFact(show = True, save = False):
+    print("Fare describe\n", titanic["Fare"].describe())
 
-    plt.subplot(122)
-    plt.pie([no_parch['Survived'][no_parch['Survived'] == 0].count(),\
-            no_parch['Survived'].sum()], \
-            labels=['No Survived', 'Survived'], autopct='%1.0f%%')
-    plt.show()
-    print(no_parch['Survived'].sum())
-
-def fareFact():
     # 票价分布
-    plt.figure(figsize=(10, 5))
-    titanic['Fare'].hist(bins=70)
-    titanic.boxplot(column='Fare', by='Pclass', showfliers=False)
-    plt.show()
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+    titanic['Fare'].hist(bins=70, ax=ax1)
+    plt.title("票价分布")
 
+    titanic.boxplot(column='Fare', by='Pclass',\
+        showfliers=False, ax=ax2)
+    plt.title("级别和票价之间的关系")
+    if show:
+        plt.show()
+    if save:
+        fig.savefig("titanic_fare_fact0.png")
+
+    fig, axes = plt.subplots(1, 1)
     fare_not_survived = titanic["Fare"][titanic["Survived"] == 0]
     fare_survived = titanic["Fare"][titanic["Survived"] == 1]
-    avgerage_fare = pd.DataFrame([fare_not_survived.mean(), fare_survived.mean()])
+    average_fare = pd.DataFrame([fare_not_survived.mean(), fare_survived.mean()])
     std_fare = pd.DataFrame([fare_not_survived.std(), fare_survived.std()])
-    avgerage_fare.plot(yerr=std_fare, kind='bar', legend=False)
-    plt.show()
+    ax = average_fare.plot(yerr=std_fare, kind='bar', ax=axes, legend=False)
+    ax.set_xlabel("是否生还")
+    ax.set_title("是否生还和票价分布")
+    if show:
+        plt.show()
+    if save:
+        fig.savefig("titanic_fare_fact1.png")
 
-def embarkedFact():
-    #两个丢失值，计划用众数填充
+def embarkedFact(show = True, save = False):
+    #两个丢失值，用众数填充
     titanic["Embarked"] = titanic["Embarked"].fillna("S")
-    sns.factorplot(x='Embarked', y='Survived', \
-        data=titanic, height=3, aspect=2)
-    plt.show()
 
     # 各港口上船人数、生还人数及生还率
-    fig, (axis1, axis2, axis3) = plt.subplots(1, 3, figsize=(15, 5))
-    sns.countplot(x='Embarked', data=titanic, ax=axis1)
-    sns.countplot(x='Survived', hue="Embarked", \
-        data=titanic, order=[1, 0], ax=axis2)
+    fig, (axis1, axis2, axis3) = plt.subplots(1, 3, figsize=(20, 5))
+    ax = sns.countplot(x='Embarked', data=titanic, ax=axis1)
+    ax.set_xlabel("港口")
+    ax.set_ylabel("人数")
+    ax.set_title("海难发生前，各港口乘客人数")
+
+    ax = sns.countplot(x='Embarked', hue="Survived", \
+        data=titanic, order=['S', 'C', 'Q'], ax=axis2)
+    ax.set_xlabel("港口")
+    ax.set_ylabel("人数")
+    ax.set_title("海难发生后，各港口是否生还乘客人数")
+
     embark_perc = titanic[["Embarked", "Survived"]].groupby(['Embarked'],\
         as_index=False).mean()
-    sns.barplot(x='Embarked', y='Survived', \
-        data=embark_perc, order=['S', 'C', 'Q'], ax=axis3)
-    plt.show()
+    sns.catplot(x='Embarked', y='Survived',\
+        data=embark_perc, height=3, aspect=2,\
+        ax=axis3, order=['S', 'C', 'Q'],\
+        markers=["o"], linestyles=["--"], kind="point")
+
+    print(embark_perc)
+    if show:
+        plt.show()
+    if save:
+        fig.savefig("titanic_embarked_fact1.png")
 
 if __name__ == "__main__":
     sns.set(style="whitegrid")
@@ -380,7 +318,6 @@ if __name__ == "__main__":
     plt.rcParams['font.sans-serif'] = ['SimHei']
     # 正常显示负号
     plt.rcParams['axes.unicode_minus'] = False
-
 
     titanic = pd.read_csv("./data/titanic-data.csv")
     # 删除和生还无关的信息
@@ -393,13 +330,13 @@ if __name__ == "__main__":
     titanic.drop("Cabin", axis=1)
     survived = titanic[titanic['Survived'] == 1]
     overview()
-    if 0:
-        PclassFact()
-        sexFact()
-        ageFact()
-        sibSpFact()
-        parchFact()
-        fareFact()
-        embarkedFact()
+    PclassFact()
+    sexFact()
+    ageFact()
+    sibSpFact()
+    parchFact()
+    fareFact()
+    embarkedFact()
+
 
 
