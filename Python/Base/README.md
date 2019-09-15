@@ -1,3 +1,5 @@
+### Python自省
+运行时能够获得对象的类型.比如type(),dir(),getattr(),hasattr(),isinstance()
 ### Python函数的参数传递
 
 Python中的类型是属于对象的，而非变量，Python中的对象有两种：<br/>
@@ -22,3 +24,10 @@ Python中的类型是属于对象的，而非变量，Python中的对象有两�
 程序示例：
 - functionalProgramming.py<br/>
     功能说明：通过示例展示lamda、map、reduce、filter的使用。
+	
+### 生产者消费者模型实现
+- ProducerConsumer
+	- MultiThread.py   多线程实现
+	- MultiProcess.py  多进程实现
+	- CoroutinesC-P.py 协程实现，利用生成器实现，消费者向生产者请求数据
+	- CoroutinesP-C.py 协程实现，利用生成器实现，生产者向消费者请求数据
