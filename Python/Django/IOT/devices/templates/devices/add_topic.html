@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Topic</title>
+</head>
+<body>
+    {% extends 'devices/base.html' %}
+    {% load bootstrap3 %}
+
+    {% block header%}
+        <h2>Add a new topic:</h2>
+    {% endblock header%}
+
+    {% block content %}
+        <form action="{% url 'devices:add_topic' %}" method="post">
+            <!-- 防止攻击者利用表单来获得对服务器未经授权的访问，即跨站请求伪造 -->
+            {% csrf_token %}
+            <!-- 自动创建显示表单所需要的全部字段
+                 as_p使得以段落格式渲染所有的表单元素，是整洁显示表单的最简单的方式-->
+            <!--{{ form.as_p }}-->
+            {% bootstrap_form form %}
+            {% buttons %}
+                <button class="btn btn-primary" name="submit">Add Topic</button>
+            {% endbuttons %}
+        </form>
+    {% endblock content %}
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    {% extends "devices/base.html" %}
+    {% load bootstrap3 %}
+
+    {% block header %}
+        <h2>Login in to your account.</h2>
+    {% endblock header %}
+
+    {% block content %}
+    <form method="post" action="{% url 'users:login' %}">
+        {% csrf_token %}
+        <!-- {{ form.as_p }} -->
+        {% bootstrap_form form %} <!-- 将Bootstrap样式规则应用于各个表单元素-->
+
+        {% buttons %}
+        <button class="btn btn-primary" name="submit">Login</button>
+        {% endbuttons %}
+        <!-- 确定用户登录成功之后重定向到那个页面 -->
+        <input type="hidden" name="next" value="{% url 'devices:index' %}"/>
+    </form>
+    {% endblock content %}
+</body>
+</html>

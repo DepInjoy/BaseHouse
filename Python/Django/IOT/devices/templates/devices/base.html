@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!-- 加载django-bootstrap3模板 https://getbootstrap.com/docs/4.4/examples/-->
+{% load bootstrap3 %}
+<html lang="en">
+<head>
+    <!-- 将正确显示页面所需要的信息告诉浏览器 -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- 设置标题栏显示的内容 -->
+    <title>Title</title>
+
+    <!-- django-bootstrap3自定义模板标签，它将Django包含所有的Bootstrap样式文件-->
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+<body>
+    <!-- Static Navbar -->
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <!-- 定义一个按钮在窗口太窄无法显示整个导航栏时显示出来 -->
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                </button>
+
+                <!-- 在导航的最左边显示项目名称，将其设置为主页的链接-->
+                <a class="navbar-brand" href="{% url 'devices:index' %}">Devices</a>
+            </div>
+        </div>
+
+        <!-- 网站导航链接 -->
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{% url 'devices:index' %}">Devices</a></li>
+                <li><a href="{% url 'devices:topics' %}">Topics</a></li>
+                <li><a href="{% url 'devices:add_topic' %}">Add a new topic</a></li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                {% if user.is_authenticated %}
+                    <li>Hello, {{ user.username }}.</li>
+                    <li><a href="{% url 'users:logout' %}">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'users:login' %}">Login</a></li>
+                    <li><a href="{% url 'users:register' %}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div><!-- /.nav-collapse -->
+    </nav>
+    <div>
+        <div class="container">
+            <div class="page-header">
+                {% block header %} {% endblock header %}
+            </div>
+            <div>
+                <!-- content占位符，包含的信息由子模板决定 -->
+                {% block content %} {% endblock content %}
+            </div>
+        </div>
+    </div><!-- /container-->
+    <p>
+        <a href="{% url 'devices:index' %}">Footer</a>
+    </p>
+</body>
+</html>

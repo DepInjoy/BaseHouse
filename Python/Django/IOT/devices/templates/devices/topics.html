@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Topics</title>
+</head>
+<body>
+    {% extends 'devices/base.html' %}
+    {% block header %}
+        <h1>Topics:</h1>
+    {% endblock header %}
+
+    {% block content %}
+    <ul>
+        {% for topic in topics %}
+            <li>
+                <h3>
+                    <a href="{% url 'devices:topic' topic.id %}">{{topic}}</a>
+                </h3>
+            </li>
+        <!--指定列表为空是如何处理-->
+        {% empty %}
+            <li>No Topic has been added !</li>
+        {% endfor %}
+    </ul>
+    {% endblock content %}
+</body>
+</html>

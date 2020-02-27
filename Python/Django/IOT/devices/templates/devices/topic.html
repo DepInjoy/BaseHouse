@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Topic</title>
+</head>
+<body>
+    {% extends 'devices/base.html' %}
+
+    {% block header %}
+        <h1>{{Topic}}</h1>
+    {% endblock header %}
+
+
+    {% block content %}
+    <p>Entries:</p>
+    <p>
+        <a href="{% url 'devices:add_entry' topic.id %}">Add a new entry</a>
+    </p>
+    <ul>
+        {% for entry in entries %}
+            <div class="panel panel-default">
+                <div class="panel-heading"> <!-- 面板标题 -->
+                    <h3>
+                        {{entry.date_added | date:"M d, Y H:i"}}
+                        <small>
+                            <a href="{% url 'devices:edit_entry' entry.id %}">Edit Entry</a>
+                        </small>
+                    </h3>
+                </div>
+                <div class="panel-body"> <!-- 面板主体 -->
+                    {{entry.description | linebreaks}}
+                </div>
+            </div><!-- panel -->
+        <!--指定列表为空是如何处理-->
+        {% empty %}
+            There are no entries for this yet.
+        {% endfor %}
+    </ul>
+    {% endblock content %}
+</body>
+</html>

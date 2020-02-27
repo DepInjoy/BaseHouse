@@ -1,0 +1,7 @@
+.idea/*
+xx_env/
+monitor/__pycache__/
+users/__pycache__/
+devices/__pycache__
+devices/migrations/__pycache__
+*.sqlite3
